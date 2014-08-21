@@ -165,6 +165,120 @@ Let's look at the options and arguments in this command:
     * archived-file(s) is an optional argument consisting of a space-separated list of the files to be extracted from
       the archive. If this argument is not present, the jar tool will extract all the file in the archive.
 
+#An Example
+    jar xf TicTacToe.jar TicTacToe.class images/cross.gif
+This command does two things:
+    * It places a copy of TicTacToe.class in the current directory.
+    * It creates the directory images, if it doesn't already exist, and places a copy of cross.gif within it.
+The original TicTacToe JAR file remains unchanged.
+As many files as desired can be extracted from the JAR file in the same way. When the command doesn't specity
+which files to extract, the Jar tool extracts all files in the archive. For example, you can extract all the files
+in the TicTacToe archive by using this command:
+    jar xf TicTacToe.jar    
+
 #This document copy from Oracle!!
 #COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/unpack.html
+#DATE: 2014-08-21
+
+
+#Updating a JAR File
+The Jar tool provides a u option which you can use to update the contents of an existing JAR file by modifying its 
+manifest or by adding files.
+The basic command for adding files has this format:
+    jar uf jar-file input-file(s)
+In this command:
+    * The u option indicates that you want to update an existing JAR file.
+    * The f option indicates that the JAR file to update is specified on the command line.
+    * jar-file is the existing JAR file that's to be updated.
+    * input-file(s) is a space-delimited list of one or more files that you want to add to the Jar file.
+Any files already in the archive having the same pathname as a file being added will be overwritten.
+When creating a new JAR file, you can optionally use the -C option to indicate a change of directory. For more 
+information, see the Creating a JAR File section.
+
+#Example
+Suppose that you want to add the file images/new.gif to the JAR file. You could accomplish that by issuing this 
+command from the parent directory of the images directory:
+    jar uf TicTacToe.jar images/new.gif
+    
+You can use the -C option to "change directories" during execution of the command. For example:
+    jar uf TicTacToe.jar -C images new.gif
+This command would change to the images directory before adding new.gif to the JAR file. The images directory would 
+not be included in the pathname of new.gif when it's added to the archive, resulting in a table of contents that looks 
+like this:
+META-INF/MANIFEST.MF
+TicTacToe.class
+TicTacToe.class
+TicTacToe.java
+audio/
+audio/beep.au
+audio/ding.au
+audio/return.au
+audio/yahoo1.au
+audio/yahoo2.au
+example1.html
+images/
+images/cross.gif
+images/not.gif
+new.gif
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/update.html
+#DATE: 2014-08-21
+
+
+##Running JAR-Packaged Software
+Now that you have learned how to create JAR files, how do you actually run the code you packaged? Consider these 
+scenarios:
+    * Your JAR file contains an applet that is to be run inside a browser.
+    * Your JAR file contains an application that is to be started from the command line.
+    * Your JAR file contains code that you want to use as an extension.
+This section will cover the first two situations. A separate trail in the tutorial on the extension mechanism covers the 
+use of JAR files as extensions.
+
+#Applets Packaged in JAR Files
+To start any applet from an HTML file for running inside a browser, you use the applet tag. For more information, see 
+the Java Applets lesson. If the applet is bundled as a JAR file, the only thing you need to do differently is to use the
+archive parameter to specify the relative path to the JAR file.
+As an example, use the TicTacToe demo applet. The applet tag in the HTML file that displays the applet can be 
+marked up like this:
+<applet code=TicTacToe.class 
+        width="120" height="120">
+</applet>
+If the TicTacToe demo was packaged in a JAR file named TicTacToe.jar, you can modify the applet tag with the 
+addition of an archive parameter:
+<applet code=TicTacToe.class 
+        archive="TicTacToe.jar"
+        width="120" height="120">
+</applet>
+
+The archive parameter specifies the relative path to the JAR file that contains TicTacToe.class. For this example it is 
+assumed that the JAR file and the HTML file are in the same directory. If they are not, you must include the JAR file's 
+relative path in the archive parameter's value. For example, if the JAR file was one directory below the HTML file in a 
+directory called applets, the applet tag would look like this:
+<applet code=TicTacToe.class 
+        archive="applets/TicTacToe.jar"
+        width="120" height="120">
+</applet>
+
+#JAR Files as Applications
+You can run JAR packaged applications with the Java launcher (java command). The basic command is:
+    java -jar jar-file
+The -jar flag tells the launcher that the application is packaged in the JAR file format. You can only specify one JAR 
+file, which must contain all of the application-specific code.
+
+Before you execute this command, make sure that the runtime environment has information about which class within 
+the JAR file is the application's entry point.
+
+To indicate which class is the application's entry point, you must add a Main-Class header to the JAR file's manifest. 
+The header takes the form:
+    Main-Class: classname
+The header's value, classname, is the name of the class that is the application's entry point.
+For more information, see the Setting an Application's Entry Point section.
+When the Main-Class is set in the manifest file, you can run the application from the command line:
+    java -jar app.jar
+To run the application from the jar file that is in another directory, you must specify the path of that directory: 
+    java -jar path/app.jar
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/run.html
 #DATE: 2014-08-21

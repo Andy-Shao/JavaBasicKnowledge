@@ -1,0 +1,53 @@
+JAR files support a wide range of functionality, including electronic signing, version control, package sealing, and 
+others. What gives a JAR file this versatility? The answer is the JAR file's manifest.
+
+The manifest is a special file that can contain information about the files packaged in a JAR file. By tailoring this 
+"meta" information that the manifest contains, you enable the JAR file to serve a variety of purposes.
+
+This lesson will explain the contents of the manifest file and show you how to work with it, with examples for the basic 
+features:
+
+#Understanding the Default Manifest
+When you create a JAR file, a default manifest is created automatically. This section describes the default manifest.
+
+#Modifying a Manifest File
+This section shows you the basic method of modifying a manifest file. The later sections demonstrate specific
+modifications you may want to make.
+
+#Setting an Application's Entry Point
+This section describes how to use the Main-Class header in the manifest file to set an application's entry point.
+
+#Adding Classes to the JAR File's Classpath
+This section describes how to use the Class-Path header in the manifest file to add classes in other JAR files to the
+classpath when running an applet or application.
+
+#Setting Package Version Information
+This section describes how to use the package version hearders in the manifest file.
+
+#Sealing Packages within a JAR File
+This section describe how to use the package version headers in the manifest file.
+
+#Enhancing Security with Manifest Attributes
+This section describe how to use manifest attributes to increase the security of an applet or Java Web Start
+application.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/manifestindex.html
+#DATE: 2014-08-21
+
+
+##Understanding the Default Manifest
+When you create a JAR file, it automatically receives a default manifest file. There can be only one manifest file in an 
+archive, and it always has the pathname
+    META-INF/MANIFEST.MF
+When you create a JAR file, the default manifest file simply contains the following:
+    Manifest-Version: 1.0
+    Created-By: 1.7.0_06 (Oracle Corporation)
+
+These lines show that a manifest's entries take the form of "header: value" pairs. The name of a header is separated 
+from its value by a colon. The default manifest conforms to version 1.0 of the manifest specification and was created 
+by the 1.7.0_06 version of the JDK.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/manifestindex.html
+#DATE: 2014-08-21
