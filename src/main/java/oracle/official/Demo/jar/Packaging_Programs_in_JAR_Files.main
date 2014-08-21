@@ -1,0 +1,22 @@
+The Java™ Archive (JAR) file format enables you to bundle multiple files into a single archive file. Typically a JAR file 
+contains the class files and auxiliary resources associated with applets and applications.
+The JAR file format provides many benefits:
+    * Security: You can digitally sign the contents of a JAR file. Users who recognize your signature can then 
+      optionally grant your software security privileges it wouldn't otherwise have.
+    * Decreased download time: If your applet is bundled in a JAR file, the applet's class files and associated 
+      resources can be downloaded to a browser in a single HTTP transaction without the need for opening a new 
+      connection for each file.
+    * Compression: The JAR format allows you to compress your files for efficient storage.
+    * Packaging for extensions: The extensions framework provides a means by which you can add functionality to 
+      the Java core platform, and the JAR file format defines the packaging for extensions. By using the JAR file 
+      format, you can turn your software into extensions as well.
+    * Package Sealing: Packages stored in JAR files can be optionally sealed so that the package can enforce 
+      version consistency. Sealing a package within a JAR file means that all classes defined in that package must 
+      be found in the same JAR file.
+    * Package Versioning: A JAR file can hold data about the files it contains, such as vendor and version 
+      information.
+    * Portability: The mechanism for handling JAR files is a standard part of the Java platform's core API.
+      
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/index.html
+#DATE: 2014-08-21

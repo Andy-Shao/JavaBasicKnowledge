@@ -1,0 +1,170 @@
+JAR files are packaged with the ZIP file format, so you can use them for tasks such as lossless data compression, 
+archiving, decompression, and archive unpacking. These tasks are among the most common uses of JAR files, and 
+you can realize many JAR file benefits using only these basic features.
+
+Even if you want to take advantage of advanced functionality provided by the JAR file format such as electronic 
+signing, you'll first need to become familiar with the fundamental operations.
+
+To perform basic tasks with JAR files, you use the Java Archive Tool provided as part of the Java Development Kit 
+(JDK). Because the Java Archive tool is invoked by using the jar command, this tutorial refers to it as 'the Jar tool'.
+
+As a synopsis and preview of some of the topics to be covered in this section, the following table summarizes 
+common JAR file operations:
+            Common JAR file operations
+Operation                                   Command
+To create a JAR file                        jar cf jar-file input-file(s)
+To view the contents of a JAR file          jar tf jar-file
+To extract the contents of a JAR file       jar xf jar-file
+To extract specific files from a JAR file   jar xf jar-file archived-file(s)
+To run an application packaged as a         java -jar app.jar
+JAR file (requires the Main-class 
+manifest header)  
+To invoke an applet packaged as a JAR file  <applet code=AppletClassName.class
+                                                archive="JarFileName.jar"
+                                                width=width height=height>
+                                            </applet>
+
+This section shows you how to perform the most common JAR-file operations, with examples for each of the basic 
+features:
+
+#Creating a JAR File
+This section shows you how to use the Jar tool to package files and directories into a JAR file.
+
+#Viewing the Contents of a JAR File
+You can display a JAR file's table of contents to see what it contains without actually unpacking the JAR file.
+
+#Extracting the Contents of a JAR File
+You can use the Jar tool to unpack a JAR file. When extracting files, the Jar tool makes copies of the desired files 
+and writes them to the current directory, reproducing the directory structure that the files have in the archive.
+
+#Updating a JAR File
+This section shows you how to update the contents of an existing JAR file by modifying its manifest or by adding files.
+
+#Running JAR-Packaged Softwares
+This section shows you how to invoke and run applets and applications that are packaged in JAR files.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/index.html
+#DATE: 2014-08-21
+
+
+##Creating a JAR File
+The basic format of the command for creating a JAR file is:
+    jar cf jar-file input-file(s)
+The options and arguments used in this command are:
+    * The c option indicates that you want to create a JAR file.
+    * The f option indicates that you want the output to go to a file rather than to stdout.
+    * jar-file is the name that you want the resulting JAR file to have. You can use any filename for a JAR file. By 
+      convention, JAR filenames are given a .jar extension, though this is not required.
+    * The input-file(s) argument is a space-separated list of one or more files that you want to include in your JAR 
+      file. The input-file(s) argument can contain the wildcard * symbol. If any of the "input-files" are directories, 
+      the contents of those directories are added to the JAR archive recursively.
+      
+The c and f options can appear in either order, but there must not be any space between them.
+This command will generate a compressed JAR file and place it in the current directory. The command will also 
+generate a default manifest file for the JAR archive.
+--
+Note: 
+The metadata in the JAR file, such as the entry names, comments, and contents of the manifest, must be 
+encoded in UTF8.
+--
+
+You can add any of these additional options to the cf options of the basic command:
+        jar command options
+v      Produces verbose output on stdout while the JAR file is being built. The verbose output tells you the name
+        of each file as it's added to the JAR file.
+
+0       Indicates that you don't want the JAR file to be compressed.
+
+M       Indicates that the default manifest file should not be produced.
+
+m       Used to include manifest information from an existing manifest file. The format for using this option is:
+            jar cmf existing-mainfest   jar-file    input-file(s)
+        See Modifiying a Manifest File for more information about this option.
+        --
+        Warning: The manifest must end with a new line or carriage return. The last line will not be 
+        parsed properly if it does not end with a new line or carriage return.
+        --
+        
+-C      To change directories during execution of the command. See below for an example.
+
+--
+Note:
+When you create a JAR file, the time of creation is stored in the JAR file. Therefore, even if the contents of 
+the JAR file do not change, when you create a JAR file multiple times, the resulting files are not exactly 
+identical. You should be aware of this when you are using JAR files in a build environment. It is 
+recommended that you use versioning information in the manifest file, rather than creation time, to control 
+versions of a JAR file. See the Setting Package Version Information section.
+--
+
+#An Example
+jar cvf TicTacToe.jar TicTacToe.class audio images
+the audio and images are directories. All of files of audio and images will be packed in TicTacToe.jar file.
+
+jar cvf TicTacToe.jar *
+
+jar cf ImageAudio.jar -C images . -C audio .
+The -C images part of this command directs the Jar tool to go to the images directory, and the . following -C images
+directs the Jar tool to archive all the contents of that directory. The -C audio . part of the command then does the 
+same with the audio directory. The resulting JAR file would have this table of contents:
+META-INF/MANIFEST.MF
+cross.gif
+not.gif
+beep.au
+ding.au
+return.au
+yahoo1.au
+yahoo2.au
+
+jar cf ImageAudio.jar -C images img -C audio aio
+Will find from images/img and audio/aio. 
+ 
+By contrast, suppose that you used a command that did not employ the -C option:
+jar cf ImageAudio.jar images audio
+The resulting JAR file would have this table of contents:
+
+META-INF/MANIFEST.MF
+images/cross.gif
+images/not.gif
+audio/beep.au
+audio/ding.au
+audio/return.au
+audio/yahoo1.au
+audio/yahoo2.au
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/build.html
+#DATE: 2014-08-21
+
+
+##Viewing the Contents of a JAR File
+The basic format of the command for viewing the contents of a JAR file is:
+    jar tf jar-file
+Let's look at the options and argument used in this command:
+    * The t option indicates that you want to view the table of contents of the JAR file.
+    * The f option indicates that the JAR file whose contents are to be viewed is specified on the command line.
+    * The jar-file argument is the path and name of the JAR file whose contents you want to view.
+The t and f options can appear in either order, but there must not be any space between them.
+This command will display the JAR file's table of contents to stdout.
+You can optionally add the verbose option, v, to produce additional information about file size and last-modified dates
+in the output.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/view.html
+#DATE: 2014-08-21
+
+
+##Extracting the Contents of a JAR File
+The basic command to use for extracting the contents of a JAR file is:
+    jar xf jar-file [archived-file(s)]
+Let's look at the options and arguments in this command:
+    * The x option indicates that you want to extract files from the JAR archive.
+    * The f option indicates that the JAR file from which files are to be extracted is specified on the command line,
+      rather than through stdin.
+    * The jar-file argument is the filename (or path and filename) of the JAR file from which to extract files.
+    * archived-file(s) is an optional argument consisting of a space-separated list of the files to be extracted from
+      the archive. If this argument is not present, the jar tool will extract all the file in the archive.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/unpack.html
+#DATE: 2014-08-21
