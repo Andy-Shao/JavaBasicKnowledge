@@ -184,6 +184,142 @@ Implementation-Title                The title of the implementation.
 Implementation-Version              The build number of the implementation.
 Implementation-Vendor               The vendor of the implementation.
 
+One set of such headers can be assigned to each package. The versioning headers should appear directly beneath 
+the Name header for the package. This example shows all the versioning headers:
+    Name: java/util/
+    Specification-Title: Java Utility Classes
+    Specification-Version: 1.2
+    Specification-Vendor: Example Tech, Inc.
+    Implementation-Title: java.util
+    Implementation-Version: build57
+    Implementation-Vendor: Example Tech, Inc.
+For more information about package version headers, see the Package Versioning specification.
+
+#An Example
+We want to include the headers in the example above in the manifest of MyJar.jar
+
+We frist create a text file named Manifest.txt with the following contents:
+    Name: java/util/
+    Specification-Title: Java Utility Classes
+    Specification-Version: 1.2
+    Specification-Vendor: Example Tech, Inc.
+    Implementation-Title: java.util 
+    Implementation-Version: build57
+    Implementation-Vendor: Example Tech, Inc.
+--
+Warning: The text file must end with a new line or carriage return. The last line will not be parsed properly 
+if it does not end with a new line or carriage return.
+--
+
+We then create a JAR file named MyJar.jar by entering the following command:
+    jar cfm MyJar.jar Manifest.txt MyPackage/*.class
+This creates the JAR file with a manifest with the following contents:
+
+    Manifest-Version: 1.0
+    Created-By: 1.7.0_06 (Oracle Corporation)1
+    Name: java/util/
+    Specification-Title: Java Utility Classes
+    Specification-Version: 1.2
+    Specification-Vendor: Example Tech, Inc.
+    Implementation-Title: java.util 
+    Implementation-Version: build57
+    Implementation-Vendor: Example Tech, Inc.
+
 #This document copy from Oracle!!
 #COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/packageman.html
 #DATE: 2014-08-22
+
+
+
+##Sealing Packages within a JAR File
+Packages within JAR files can be optionally sealed, which means that all classes defined in that package must be 
+archived in the same JAR file. You might want to seal a package, for example, to ensure version consistency among 
+the classes in your software.
+
+You seal a package in a JAR file by adding the Sealed header in the manifest, which has the general form:
+    Name: myCompany/myPackage/
+    Sealed: true
+The value myCompany/myPackage/ is the name of the package to seal.
+
+Note that the package name must end with a "/".
+
+#An Example
+We want to seal two package firstPackage and secondPackage in the JAR file MyJar.jar
+We first create a text file named Manifest.txt with the following contents:
+    Name: myCompany/firstPackage/
+    Sealed:true
+    
+    Name: myCompany/secondPackage/
+    Sealed:true
+--
+Warning: The text file must end with a new line or carriage return. The last line will not be parsed properly
+if it does not end with a new line or carriage return.
+--
+We then create a JAR file named MyJar.jar by entering the following command:
+    jar cmf MyJar.jar Manifest.txt MyPackage/*.class
+This creates the JAR file with a manifest with the following contents:
+    Manifest-Version: 1.0
+    Created-By: 1.7.0_06 (Oracle Corporation)
+    Name: myCompany/firstPackage/
+    Sealed: true
+    Name: myCompany/secondPackage/
+    Sealed: true
+    
+#Sealing JAR Files
+If you want to guarantee that all classes in a package come from the same code source, use JAR sealing. A sealed 
+JAR specifies that all packages defined by that JAR are sealed unless overridden on a per-package basis.
+To seal a JAR file, use the Sealed manifest header with the value true. For example,
+    Sealed: true
+specifies that all packages in this archive are sealed unless explicitly overridden for particular packages with the
+Sealed attribute in a manifest entry.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/sealman.html
+#DATE: 2014-08-25
+
+
+##Enhancing Security with Manifest Attributes
+The following JAR file manifest attributes are available to help ensure the security of your applet or Java Web Start 
+application. Only the Permissions attribute is required.
+    * The Permissions attribute is used to ensure that the application requests only the level of permissions that is 
+      specified in the applet tag or JNLP file used to invoke the application. Use this attribute to help prevent 
+      someone from re-deploying an application that is signed with your certificate and running it at a different 
+      privilege level.
+      This attribute is required in the manifest for the main JAR file. See Permissions Attribute in the Java Platform, 
+      Standard Edition Deployment Guide for more information.
+      
+    * The Codebase attribute is used to ensure that the code base of the JAR file is restricted to specific domains. 
+      Use this attribute to prevent someone from re-deploying your application on another website for malicious 
+      purposes. See Codebase Attribute in the Java Platform, Standard Edition Deployment Guide for more 
+      information.
+      
+    * The Application-Name attribute is used to provide the title that is shown in the security prompts for signed 
+      applications. See Application-Name Attribute in the Java Platform, Standard Edition Deployment Guide for 
+      more information.
+      
+    * The Application-Library-Allowable-Codebase attribute is used to identify the locations where your application is 
+      expected to be found. Use this attribute to reduce the number of locations shown in the security prompt when 
+      the JAR file is in a different location than the JNLP file or the HTML page. See Application-Library-Allowable-
+      Codebase Attribute in the Java Platform, Standard Edition Deployment Guide for more information.
+      
+    * The Caller-Allowable-Codebase attribute is used to identify the domains from which JavaScript code can make 
+      calls to your application. Use this attribute to prevent unknown JavaScript code from accessing your 
+      application. See Caller-Allowable-Codebase Attribute in the Java Platform, Standard Edition Deployment Guide 
+      for more information.
+      
+    * The Entry-Point attribute is used to identify the classes that are allowed to be used as entry points to your 
+      RIA. Use this attribute to prevent unauthorized code from being run from other available entry points in the JAR 
+      file. See Entry-Point Attribute in the Java Platform, Standard Edition Deployment Guide for more information.
+      
+    * The Trusted-Only attribute is used to prevent untrusted components from being loaded. See Trusted-Only 
+      Attribute in the Java Platform, Standard Edition Deployment Guide for more information.
+      
+    * The Trusted-Library attribute is used to allow calls between privileged Java code and sandbox Java code 
+      without prompting the user for permission. See Trusted-Library Attribute in the Java Platform, Standard Edition 
+      Deployment Guide for more information.
+      
+See Modifying a Manifest File for information on adding these attributes to the manifest file.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/deployment/jar/secman.html
+#DATE: 2014-08-25
