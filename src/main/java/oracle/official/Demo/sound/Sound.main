@@ -1,0 +1,30 @@
+The Java Sound API is a low-level API for effecting and controlling the input and output of sound media, including both
+and Musical Instrument Digital Interface (MIDI) data. The Java Sound API provides explicit control over the capabilities
+normally required for sound input and output, in a framework that promotes extensibility and flexibility.
+The Java Sound API fulfills the needs of a wide range of application developers. Potential application areas include:
+    * Communication frameworks, such as conferencing and telephony
+    * End-user content delivery systems, such as media players and music using streamed content
+    * Interactive application programs, such as games and Web sites that use dynamic content
+    * Content creating and editing
+    * Tools, toolkits, and utilities
+The Java Sound API provides the lowest level of sound support on the Java platform. It provides application programs 
+with a great amount of control over sound operations, and it is extensible. For example, the Java Sound API supplies 
+mechanisms for installing, accessing, and manipulating system resources such as audio mixers, MIDI synthesizers, other 
+audio or MIDI devices, file readers and writers, and sound format converters. The Java Sound API does not include 
+sophisticated sound editors or graphical tools, but it provides capabilities upon which such programs can be built. It 
+emphasizes low-level control beyond that commonly expected by the end user.
+
+The Java Sound API includes support for both digital audio and MIDI data. These two major modules of functionality are
+provided in separate packages:
+    * javax.sound.sample - This package specifies interfaces for capture, mixing, and playback of digital (sampled) 
+      audio.
+    * javax.sound.midi - This package provides interfaces for MIDI synthesis, sequencing, and event transport.
+    
+Two other packages permit service providers (as opposed to application developers) to create custom software that extend
+the capabilities of an implementation of the Java Sound API:
+    * javax.sound.sampled.spi
+    * javax.sound.midi.spi
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/sound/index.html
+#DATE: 2014-08-29

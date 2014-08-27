@@ -35,7 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * 
+ * http://docs.oracle.com/javase/tutorial/essential/io/bytestreams.html<br>
  * Descript:<br>
  * Copyright: Copyright(c) Aug 26, 2014<br>
  * Encoding:UNIX UTF-8
