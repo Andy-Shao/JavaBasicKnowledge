@@ -1,0 +1,22 @@
+#Options
+-verbose
+Lists JAR files in the extension directory as they are checked. Additionally, manifest attributes of the target JAR file and any 
+conflicting JAR files are also reported.
+
+-Joption
+Passes option to the Java Virtual Machine (JVM), where option is one of the options described on the reference page for the Java 
+launcher. For example, -J-Xms48m sets the startup memory to 48 MB.
+
+#Description
+-verbose 
+Will show some configure which come from MANIFEST.MF.
+for example:
+Specification-Title: Java Platform API Specification
+Specification-Version: 1.8
+Specification-Vendor: Oracle Corporation
+Implementation version:1.8.0_05
+Implementation vendor:Oracle Corporation
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/tools/unix/extcheck.html
+#DATE: 2014-09-05
