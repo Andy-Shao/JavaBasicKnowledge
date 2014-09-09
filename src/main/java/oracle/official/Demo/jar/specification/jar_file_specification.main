@@ -1,0 +1,12 @@
+#Introduction
+JAR file is a file format based on the popular ZIP file format and is used for aggregating many files into one. A  JAR file is 
+essentially a zip file that contains an optional META-INF directory. A JAR file can be created by the command-line jar tool, or by 
+using the  java.util.jar API in the Java platform. There is no restriction on the name of a JAR file, it can be any legal file name
+on a particular platform.
+In many cases, JAR files are not just simple archives of java classes files and/or resources. They are used as building blocks for 
+applications and extensions. The META-INF directory, if it exists, is used to store package and extension configuration data, 
+including security, versioning, extension and services.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/jar/jar.html
+#DATE: 2014-09-09
