@@ -1,0 +1,139 @@
+#Overview
+
+A JAR file can be signed by using the command line jarsigner tool or directly through the java.security API. Every file entry, including 
+non-signature related files in the META-INF directory, will be signed if the JAR file is signed by the jarsigner tool. The signature related 
+files are:
+    * META-INF/MANIFEST.MF
+    * META-INF/*.SF
+    * META-INF/*.DSA
+    * META-INF/*.RSA
+    * META-INF/SIG-*
+Note that if such files are located in META-INF subdirectories, they are not considered signature-related. Case-insensitive versions of these 
+filenames are reserved and will also not be signed.
+Subsets of a JAR file can be signed by using the java.security API. A signed JAR file is exactly the same as the original JAR file, except that
+its manifest is updated and two additional files are added to the META-INF directory: a signature file and a signature block file. When 
+jarsigner is not used, the signing program has to construct both the signature file and the signature block file.
+
+For every file entry signed in the signed JAR file, an individual manifest entry is created for it as long as it does not already exist in the 
+manifest. Each manifest entry lists one or more digest attributes and an optional Magic attribute.
+
+--
+
+#Signature File
+
+Each signer is represented by a signature file with extension .SF. The major part of the file is similar to the manifest file. It consists of a
+main section which includes information supplied by the signer but not specific to any particular jar file entry. In addition to the 
+Signature-Version and Created-By attributes (see Main Attributes), the main section can also include the following security attributes:
+    * x-Digest-Manifest-Main-Attributes (where x is the standard name of a java.security.MessageDigest algorithm): The value of this attribute 
+    is the digest value of the main attributes of the manifest.
+    * x-Digest-Manifest (where x is the standard name of a java.security.MessageDigest algorithm): The value of this attribute is the digest 
+    value of the entire manifest.
+The main section is followed by a list of individual entries whose names must also be present in the manifest file. Each individual entry must 
+contain at least the digest of its corresponding entry in the manifest file.
+Paths or URLs appearing in the manifest file but not in the signature file are not used in the calculation.
+
+--
+
+#Signature Validation
+
+A successful JAR file verification occurs if the signature(s) are valid, and none of the files that were in the JAR file when the signatures 
+were generated have been changed since then. JAR file verification involves the following steps:
+    1.Verify the signature over the signature file when the manifest is first parsed. For efficiency, this verification can be remembered. Note
+    that this verification only validates the signature directions themselves, not the actual archive files.
+
+    2.If an x-Digest-Manifest attribute exists in the signature file, verify the value against a digest calculated over the entire manifest. If
+    more than one x-Digest-Manifest attribute exists in the signature file, verify that at least one of them matches the calculated digest 
+    value.
+
+    3.If an x-Digest-Manifest attribute does not exist in the signature file or none of the digest values calculated in the previous step match
+    ,then a less optimized verification is performed:
+
+        1.If an x-Digest-Manifest-Main-Attributes entry exists in the signature file, verify the value against a digest calculated over the 
+        main attributes in the manifest file. If this calculation fails, then JAR file verification fails. This decision can be remembered for 
+        efficiency. If an x-Digest-Manifest-Main-Attributes entry does not exist in the signature file, its nonexistence does not affect JAR 
+        file verification and the manifest main attributes are not verified.
+
+        2.Verify the digest value in each source file information section in the signature file against a digest value calculated against the 
+        corresponding entry in the manifest file. If any of the digest values don't match, then JAR file verification fails.
+
+    One reason the digest value of the manifest file that is stored in the x-Digest-Manifest attribute may not equal the digest value of the 
+    current manifest file is that one or more files were added to the JAR file (using the jar tool) after the signature (and thus the 
+    signature file) was generated. When the jar tool is used to add files, the manifest file is changed (sections are added to it for the new 
+    files), but the signature file is not. A verification is still considered successful if none of the files that were in the JAR file when 
+    the signature was generated have been changed since then, which is the case if the digest values in the non-header sections of the 
+    signature file equal the digest values of the corresponding sections in the manifest file.
+
+    4.For each entry in the manifest, verify the digest value in the manifest file against a digest calculated over the actual data referenced 
+    in the "Name:" attribute, which specifies either a relative file path or URL. If any of the digest values don't match, then JAR file 
+    verification fails.
+    
+Example manifest file:
+
+    Manifest-Version: 1.0
+    Created-By: 1.7.0 (Sun Microsystems Inc.)
+
+    Name: common/class1.class
+    SHA-256-Digest: (base64 representation of SHA-256 digest)
+
+    Name: common/class2.class
+    SHA1-Digest: (base64 representation of SHA1 digest)
+    SHA-256-Digest: (base64 representation of SHA-256 digest)
+The corresponding signature file would be:
+    Signature-Version: 1.0
+    SHA-256-Digest-Manifest: (base64 representation of SHA-256 digest)
+    SHA-256-Digest-Manifest-Main-Attributes: (base64 representation of SHA-256 digest)
+
+    Name: common/class1.class
+    SHA-256-Digest: (base64 representation of SHA-256 digest)
+
+    Name: common/class2.class
+    SHA-256-Digest: (base64 representation of SHA-256 digest)
+    
+--
+
+#The Magic Attribute
+
+Another requirement to validate the signature on a given manifest entry is that the verifier understand the value or values of the Magic 
+key-pair value in that entry's manifest entry.
+The Magic attribute is optional but it is required that a parser understand the value of an entry's Magic key if it is verifying that entry's 
+signature.
+
+The value or values of the Magic attribute are a set of comma-separated context-specific strings. The spaces before and after the commas are 
+ignored. Case is ignored. The exact meaning of the magic attributes is application specific. These values indicate how to compute the hash 
+value contained in the manifest entry, and are therefore crucial to the proper verification of the signature. The keywords may be used for 
+dynamic or embedded content, multiple hashes for multilingual documents, etc.
+
+Here are two examples of the potential use of Magic attribute in the manifest file:
+
+        Name: http://www.example-scripts.com/index#script1
+        SHA-256-Digest: (base64 representation of SHA-256 hash)
+        Magic: JavaScript, Dynamic
+
+        Name: http://www.example-tourist.com/guide.html
+        SHA-256-Digest: (base64 representation of SHA-256 hash)
+        SHA-256-Digest-French: (base64 representation of SHA-256 hash)
+        SHA-256-Digest-German: (base64 representation of SHA-256 hash)
+        Magic: Multilingual
+In the first example, these Magic values may indicate that the result of an http query is the script embedded in the document, as opposed to 
+the document itself, and also that the script is generated dynamically. These two pieces of information indicate how to compute the hash value
+against which to compare the manifest's digest value, thus comparing a valid signature.
+
+In the second example, the Magic value indicates that the document retrieved may have been content-negotiated for a specific language, and 
+that the digest to verify against is dependent on which language the document retrieved is written in.
+
+--
+
+#Digital Signatures
+A digital signature is a signed version of the .SF signature file. These are binary files not intended to be interpreted by humans.
+Digital signature files have the same filenames as the .SF files but different extensions. The extension varies depending on the type of digital signature.
+
+.RSA (PKCS7 signature, SHA-256 + RSA)
+.DSA (PKCS7 signature, DSA)
+Digital signature files for signature algorithms not listed above must reside in the META-INF directory and have the prefix "SIG-". The corresonding signature file (.SF file) must also have the same prefix.
+For those formats that do not support external signed data, the file shall consist of a signed copy of the .SF file. Thus some data may be duplicated and a verifier should compare the two files.
+
+Formats that support external data either reference the .SF file, or perform calculations on it with implicit reference.
+
+Each .SF file may have multiple digital signatures, but those signatures should be generated by the same legal entity.
+
+File name extensions may be 1 to 3 alphanum characters. Unrecognized extensions are ignored.
