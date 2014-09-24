@@ -5,3 +5,7 @@ service LDAP is used to demostrate the use of JNDI to access the directory servi
 #This document copy from Oracle!!
 #COPY FROM http://docs.oracle.com/javase/tutorial/jndi/index.html
 #DATE: 2014-09-22
+
+
+
+The JNDI Tutorial: http://docs.oracle.com/javase/jndi/tutorial/trailmap.html
