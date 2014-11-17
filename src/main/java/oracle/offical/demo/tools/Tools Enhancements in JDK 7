@@ -1,0 +1,52 @@
+The following enhancements are introduced:
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: A succinct and concise error message is printed, as appropriate, when an error occurs during the Java launcher initialization. The full stack trace will be printed when applicable, or when the error has trickled up from the ClassLoader or Reflection APIs.
+RFE: 6968053
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: Previously, the pack200 tool defaulted to using java6 packfiles in the absence of any java6 (or newer) classfiles in a segment. Starting with JDK 7, the pack200 tool defaults to using java5 packfiles for maximum compatibility.
+RFE: 6712743
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: On Solaris only, the JRE and JDK distributions had the following symbolic link (symlink): jre/lib/libjvm.so->client/libjvm.so. This was provided as a transition aid from Solaris Production JRE to the Java Reference version (more precisely ExactVM to HotSpot). This symlink will cease to exist and is no longer supported.
+Applications (usually legacy Solaris applications with a custom launcher) that have assumed the existence of this symlink, must relink with the desired library (implementing server or client), or must dynamically link with the desired VM. They can also create that symlink manually or copy the desired library implementing the VM, though this is not a recommended practice and may cause undesired side effects.
+RFE: 6899834
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: The HtmlConverter tool is no longer part of the JDK 7 distribution (starting with b128).
+RFE: 4523289
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: The default values for the cryptographic algorithms used by the keytool and jarsigner utilities have been updated to be stronger. See the keytool and jarsigner tool docs for more information.
+RFE: 6561126
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: The keytool and jarsigner tools now support the ECC algorithm in keypair generation and jar signing.
+RFE: 6870812
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: A new keytool command (-gencert) is provided to generate a non self-signed certificate. A new option (-ext) is provided to generate several X.509 v3 extensions for the -gencert, -genkeypair, and -certreq commands. There are also other new commands and options for the keytool and jarsigner tools. See the keytool and jarsigner tool docs for more information.
+RFE: 6780416, 6802846, 6324292, 6890872
+
+Area: Tools
+Standard/Platform: JDK 7
+Synopsis: In JDK 7, the javadoc tool has been updated to use style markup classes that can control the styles of the generated pages. With the -stylesheetfile option, you can provide an alternate stylesheet file to be used. Without this option, the javadoc tool automatically creates a stylesheet file called "stylesheet.css". You can override this default with another file name, for example:
+
+C:> javadoc -stylesheetfile C:\user\exampleStylesheet.css com.examplePackage
+The generated pages have style markups for various sections. Through the stylesheet file you can define styles for these sections. The default stylesheet file is sorted according to each style in that section. You can customize the styles for:
+Page navigation
+Headers and Footers
+Content
+Overall document
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/tools/enhancements-7.html
+#DATE: 2014-08-15

@@ -1,0 +1,44 @@
+#What Is a Glob?
+
+Two methods in the Files class accept a glob argument, but what is a glob?
+
+You can use glob syntax to specify pattern-matching behavior.
+
+A glob pattern is specified as a string and is matched against other strings, such as directory or file names. Glob 
+syntax follows several simple rules:
+
+    * An asterisk, *, matches any number of characters (including none).
+    * Two asterisks, **, works like * but crosses directory boundaries. This syntax is generally used for matching 
+      complete paths.
+    * A question mark, ?, matches exactly one character.
+    * Braces specify a collection of subpatterns. For example:
+        * {sun,moon,stars} matches "sun", "moon", or "stars".
+        * {temp*,tmp*} matches all strings beginning with "temp" or "tmp".
+    * Square brackets convey a set of single characters or, when the hyphen character (-) is used, a range of 
+      characters. For example:
+        * [aeiou] matches any lowercase vowel.
+        * [0-9] matches any digit.
+        * [A-Z] matches any uppercase letter.
+        * [a-z,A-Z] matches any uppercase or lowercase letter.
+      Within the square brackets, *, ?, and \ match themselves.
+    * All other characters match themselves.
+    * To match *, ?, or the other special characters, you can escape them by using the backslash character, \. For 
+      example: \\ matches a single backslash, and \? matches the question mark.
+Here are some examples of glob syntax:
+
+    * *.html – Matches all strings that end in .html
+    * ??? – Matches all strings with exactly three letters or digits
+    * *[0-9]* – Matches all strings containing a numeric value
+    * *.{htm,html,pdf} – Matches any string ending with .htm, .html or .pdf
+    * a?*.java – Matches any string beginning with a, followed by at least one letter or digit, and ending with .java
+    * {foo*,*[0-9]*} – Matches any string beginning with foo or any string containing a numeric value
+--
+Note: If you are typing the glob pattern at the keyboard and it contains one of the special characters, you must put the
+pattern in quotes ("*"), use the backslash (\*), or use whatever escape mechanism is supported at the command line.
+--
+
+The glob syntax is powerful and easy to use. However, if it is not sufficient for your needs, you can also use a regular
+expression. For more information, see the Regular Expressions lesson.
+
+For more information about the glob sytnax, see the API specification for the getPathMatcher method in the FileSystem 
+class.

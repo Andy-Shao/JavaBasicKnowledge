@@ -1,0 +1,12 @@
+The Thing that interface java.nio.channels.AsynchronousChannel is a basic asynchronous interface.
+All of asynchronous action should inherit this interface. 
+The super interface is java.nio.channels.Channel. 
+--
+
+java.nio.channels.NetworkChannel interface.
+all of socket interfaces inherit this interface.
+The interface support bind and config the socket.
+the supportedOptions() method could give all of support config arguments collection.
+setOption() and getOption() could set or get the config argument.
+--
+

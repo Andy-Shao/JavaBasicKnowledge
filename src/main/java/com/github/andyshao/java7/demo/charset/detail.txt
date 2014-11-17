@@ -1,0 +1,21 @@
+java.nio.charset.*
+the new support for encoder and decoder in JAVA7
+--
+
+java.nio.charset.Charset //the character collection class.
+java.nio.charset.CharsetEncoder //encoder character
+java.nio.charset.CharsetDecoder //decode character
+java.nio.charset.StandardCharsets //eg. StandardCharsets.UTF_16
+java.nio.charset.CoderResult //the answer of encoder action
+--
+
+CoderResult.UNDERFLOW //the input buffer is full but also should input for encoder
+CoderResult.OVERFLOW //the space of output buffer doesn't enough
+isMalformed() is true //Not the legal format
+isUnmappalbe() is true //some char of output buffer can't use it.
+
+For last two kind reason we have some of way could process it.
+All of these is defined in java.nio.charset.CodingErrorAction.
+* CodingErrorAction.REPORT
+* CodingErrorAction.REPLACE
+* CodingErrorAction.IGNORE 

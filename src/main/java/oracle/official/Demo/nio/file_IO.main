@@ -1,0 +1,7 @@
+The java.nio.file package and its related package, java.nio.file.attribute, provide comprehensive support for file I/O and for 
+accessing the default file system. Though the API has many classes, you need to focus on only a few entry points. You will see 
+that this API is very intuitive and easy to use.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/essential/io/fileio.html
+#DATE: 2014-08-27
