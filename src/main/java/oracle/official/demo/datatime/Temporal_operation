@@ -1,0 +1,215 @@
+#The Temporal Package
+The java.time.temporal package provides a collection of interfaces, classes, and enums that support 
+date and time code and, in particular, date and time calculations.
+
+These interfaces are intended to be used at the lowest level. Typical application code should declare 
+variables and parameters in terms of the concrete type, such as LocalDate or ZonedDateTime, and not 
+in terms of the Temporal interface. This is exactly the same as declaring a variable of type String, and 
+not of type CharSequence.
+
+#Temporal and TemporalAccessor
+The Temporal interface provides a framework for accessing temporal-based objects, and is implemented 
+by the temporal-based classes, such as Instant, LocalDateTime, and ZonedDateTime. This interface 
+provides methods to add or subtract units of time, making time-based arithmetic easy and consistent 
+across the various date and time classes. The TemporalAccessor interface provides a read-only version 
+of the Temporal interface.
+
+Both Temporal and TemporalAccessor objects are defined in terms of fields, as specified in the
+TemporalField interface. The ChronoField enum is a concrete implementation of the
+TemporalField interface and provides a rich set of defined constants, such as DAY_OF_WEEK,
+MINUTE_OF_HOUR, and MONTH_OF_YEAR.
+
+The units for these fields are specified by the TemporalUnit interface. The ChronoUnit enum 
+implements the TemporalUnit interface. The field ChronoField.DAY_OF_WEEK is a combination of
+ChronoUnit.DAYS and ChronoUnit.WEEKS. The ChronoField and ChronoUnit enums are 
+discussed in the following sections.
+
+The arithmetic-based methods in the Temporal interface require parameters defined in terms of
+TemporalAmount values. The Period and Duration classes (discussed in Period and Duration) 
+implement the TemporalAmount interface.
+
+#ChronoField and IsoFields
+The ChronoField enum, which implements the TemporalField interface, provides a rich set of 
+constants for accessing date and time values. A few examples are CLOCK_HOUR_OF_DAY, NANO_OF_DAY,
+and DAY_OF_YEAR. This enum can be used to express conceptual aspects of time, such as the third week 
+of the year, the 11th hour of the day, or the first Monday of the month. When you encounter a Temporal 
+of unknown type, you can use the TemporalAccessor.isSupported(TemporalField) method to 
+determine if the Temporal supports a particular field. The following line of code returns false, indicating 
+that LocalDate does not support ChronoField.CLOCK_HOUR_OF_DAY:
+    boolean isSupported = LocalDate.now().isSupported(ChronoField.CLOCK_HOUR_OF_DAY);
+Additional fields, specific to the ISO-8601 calendar system, are defined in the IsoFields class. The 
+following examples show how to obtain the value of a field using both ChronoField and IsoFields:
+    time.get(ChronoField.MILLI_OF_SECOND)
+    int qoy = date.get(IsoFields.QUARTER_OF_YEAR);
+Two other classes define additional fields that may be useful, WeekFields and JulianFields.
+
+#ChronoUnit
+The ChronoUnit enum implements the TemporalUnit interface, and provides a set of standard units 
+based on date and time, from milliseconds to millenia. Note that not all ChronoUnit objects are 
+supported by all classes. For example, the Instant class does not support ChronoUnit.MONTHS or
+ChronoUnit.YEARS. The TemporalAccessor.isSupported(TemporalUnit) method can be used 
+to verify whether a class supports a particular time unit. The following call to isSupported returns
+false, confirming that the Instant class does not support ChronoUnit.DAYS.
+    boolean isSupported = instant.isSupported(ChronoUnit.DAYS);
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/datetime/iso/temporal.html
+#DATE: 2014-08-19
+
+
+#Temporal Adjuster
+The TemporalAdjuster interface, in the java.time.temporal package, provides methods that take a
+Temporal value and return an adjusted value. The adjusters can be used with any of the temporal-based 
+types.
+If an adjuster is used with a ZonedDateTime, then a new date is computed that preserves the original 
+time and time zone values.
+
+#Predefined Adjusters
+The TemporalAdjusters class (note the plural) provides a set of predefined adjusters for finding the 
+first or last day of the month, the first or last day of the year, the last Wednesday of the month, or the first 
+Tuesday after a specific date, to name a few examples. The predefined adjusters are defined as static 
+methods and are designed to be used with the static import statement.
+
+The following example uses several TemporalAdjusters methods, in conjunction with the with method 
+defined in the temporal-based classes, to compute new dates based on the original date of 15 October 
+2000:
+    LocalDate date = LocalDate.of(2000, Month.OCTOBER, 15);
+    DayOfWeek dotw = date.getDayOfWeek();
+    System.out.printf("%s is on a %s%n", date, dotw);
+
+    System.out.printf("first day of Month: %s%n",
+                  date.with(TemporalAdjusters.firstDayOfMonth()));
+    System.out.printf("first Monday of Month: %s%n",
+                  date.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)));
+    System.out.printf("last day of Month: %s%n",
+                  date.with(TemporalAdjusters.lastDayOfMonth()));
+    System.out.printf("first day of next Month: %s%n",
+                  date.with(TemporalAdjusters.firstDayOfNextMonth()));
+    System.out.printf("first day of next Year: %s%n",
+                  date.with(TemporalAdjusters.firstDayOfNextYear()));
+    System.out.printf("first day of Year: %s%n",
+                  date.with(TemporalAdjusters.firstDayOfYear()));
+This produces the following output:
+    2000-10-15 is on a SUNDAY
+    first day of Month: 2000-10-01
+    first Monday of Month: 2000-10-02
+    last day of Month: 2000-10-31
+    first day of next Month: 2000-11-01
+    first day of next Year: 2001-01-01
+    first day of Year: 2000-01-01
+    
+#Custom Adjusters
+You can also create your own custom adjuster. To do this, you create a class that implements the
+TemporalAdjuster interface with a adjustInto(Temporal) method. The PaydayAdjuster class 
+from the NextPayday example is a custom adjuster. The PaydayAdjuster evaluates the passed-in date 
+and returns the next payday, assuming that payday occurs twice a month: on the 15th, and again on the 
+last day of the month. If the computed date occurs on a weekend, then the previous Friday is used. The 
+current calendar year is assumed.
+/**
+ * The adjustInto method accepts a Temporal instance 
+ * and returns an adjusted LocalDate. If the passed in
+ * parameter is not a LocalDate, then a DateTimeException is thrown.
+ */
+public Temporal adjustInto(Temporal input) {
+    LocalDate date = LocalDate.from(input);
+    int day;
+    if (date.getDayOfMonth() < 15) {
+        day = 15;
+    } else {
+        day = date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+    }
+    date = date.withDayOfMonth(day);
+    if (date.getDayOfWeek() == DayOfWeek.SATURDAY ||
+        date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+        date = date.with(TemporalAdjusters.previous(DayOfWeek.FRIDAY));
+    }
+
+    return input.with(date);
+}
+The adjuster is invoked in the same manner as a predefined adjuster, using the with method. The 
+following line of code is from the NextPayday example:
+    LocalDate nextPayday = date.with(new PaydayAdjuster());
+In 2013, both June 15 and June 30 occur on the weekend. Running the NextPayday example with the 
+respective dates of June 3 and June 18 (in 2013), gives the following results:
+    Given the date:  2013 Jun 3
+    the next payday: 2013 Jun 14
+
+    Given the date:  2013 Jun 18
+    the next payday: 2013 Jun 28
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/datetime/iso/adjusters.html
+#DATE: 2014-08-19
+
+
+#Temporal Query
+A TemporalQuery can be used to retrieve information from a temporal-based object.
+
+#Predefined Queries
+The TemporalQueries class (note the plural) provides several predefined queries, including methods 
+that are useful when the application cannot identify the type of temporal-based object. As with the 
+adjusters, the predefined queries are defined as static methods and are designed to be used with the static 
+import statement.
+
+The precision query, for example, returns the smallest ChronoUnit that can be returned by a particular 
+temporal-based object. The following example uses the precision query on several types of temporal-
+based objects:
+    TemporalQueries query = TemporalQueries.precision();
+    System.out.printf("LocalDate precision is %s%n",
+                  LocalDate.now().query(query));
+    System.out.printf("LocalDateTime precision is %s%n",
+                  LocalDateTime.now().query(query));
+    System.out.printf("Year precision is %s%n",
+                  Year.now().query(query));
+    System.out.printf("YearMonth precision is %s%n",
+                  YearMonth.now().query(query));
+    System.out.printf("Instant precision is %s%n",
+                  Instant.now().query(query));
+The output looks like the following:
+    LocalDate precision is Days
+    LocalDateTime precision is Nanos
+    Year precision is Years
+    YearMonth precision is Months
+    Instant precision is Nanos
+    
+#Custom Queries
+You can also create your own custom queries. One way to do this is to create a class that implements the
+TemporalQuery interface with the queryFrom(TemporalAccessor) method. The CheckDate
+example implements two custom queries. The first custom query can be found in the FamilyVacations
+class, which implements the TemporalQuery interface. The queryFrom method compares the passed-in 
+date against scheduled vacation dates and returns TRUE if it falls within those date ranges.
+// Returns true if the passed-in date occurs during one of the
+// family vacations. Because the query compares the month and day only,
+// the check succeeds even if the Temporal types are not the same.
+public Boolean queryFrom(TemporalAccessor date) {
+    int month = date.get(ChronoField.MONTH_OF_YEAR);
+    int day   = date.get(ChronoField.DAY_OF_MONTH);
+
+    // Disneyland over Spring Break
+    if ((month == Month.APRIL.getValue()) && ((day >= 3) && (day <= 8)))
+        return Boolean.TRUE;
+
+    // Smith family reunion on Lake Saugatuck
+    if ((month == Month.AUGUST.getValue()) && ((day >= 8) && (day <= 14)))
+        return Boolean.TRUE;
+
+    return Boolean.FALSE;
+}
+
+The FamilyBirthday class does not implement the TemporalQuery interface and can be used as part 
+of a lambda expression. The following code, from the CheckDate example, shows how to invoke both 
+custom queries.
+// Invoking the query without using a lambda expression.
+Boolean isFamilyVacation = date.query(new FamilyVacations());
+
+// Invoking the query using a lambda expression.
+Boolean isFamilyBirthday = date.query(FamilyBirthdays::isFamilyBirthday);
+
+if (isFamilyVacation.booleanValue() || isFamilyBirthday.booleanValue())
+    System.out.printf("%s is an important date!%n", date);
+else
+    System.out.printf("%s is not an important date.%n", date);
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/datetime/iso/queries.html
+#DATE: 2014-08-19

@@ -1,0 +1,64 @@
+In Java SE 8, new classes have been added and existing classes have been enhanced to take advantage of lambda expressions and streams, which are described in the lesson Aggregate Operations in the Java
+Tutorials. You can find most of these new and enhanced classes in the following packages:
+    * java.util: An existing package which, in addition to the java.lang.invoke package, integrates the Java Collections Framework with stream and provides general utility functionality used by streams.
+    * java.util.function: A new package that contains general purpose functional interfaces that provide target types for lambda expressions and method references.
+    * java.util.stream: A new package that contains the majority of interfaces and classes that provide functionality to streams and aggregate operations.
+    
+Many additions to existing classes take advantage of streams. Other additions include methods that accept instances of functional interfaces, which you can invoke with lambda expression or method references.
+
+New Packages
+java.util.function
+java.util.stream
+
+Modified Packages
+Classes such as Boolean, Integer, and other object wrapper classes for primitive types (see Autoboxing and Unboxing) are listed here because they have been enhanced with methods that are suitable for
+targets of method references. For example, you can use the method Integer.sum as a method reference, as demonstrated in the following example that adds integers contained in a list.
+
+Integer[] intArray = {1, 2, 3, 4, 5, 6, 7, 8};
+List<Integer> listOfIntegers = new ArrayList<>(Arrays.asList(intArray));
+System.out.println("Sum of integers: " +
+    listOfIntegers
+        .stream()
+        .reduce(Integer::sum).get());
+        
+Package                 New Classes                 Modified Classes
+java.io                 UncheckedIOException        BufferedReader
+
+java.lang               not applicable              AutoCloseable
+                                                    ThreadLocal
+                                                    String
+                                                    Iterable
+                                                    CharSequence
+                                                    Boolean
+                                                    Integer
+                                                    Long
+                                                    Float
+                                                    Double
+                                                
+java.nio.file           not applicable              Files
+
+java.util               PrimitiveIterator           Arrays
+                        Spliterator                 BitSet
+                        DoubleSummaryStatistics     Collection
+                        IntSummaryStatistics        Comparator
+                        LongSummaryStatistics       Iterator
+                        Optional                    List
+                        OptionalDouble              Map
+                        OptionalInt                 Map.Entry
+                        Spliterators                LinkedHashMap
+                        SplittableRandom            Random
+                        StringJoiner                TreeMap
+                    
+java.util.concurrent    not applicable              ThreadLocalRandom
+
+java.util.jar           not applicable              JarFile
+
+java.util.zip           not applicable              ZipFile
+
+java.util.logging       not applicable              Logger
+
+java.util.regex         not applicable              Pattern
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/language/lambda_api_jdk8.html
+#DATE: 2014-08-11

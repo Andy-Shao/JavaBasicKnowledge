@@ -1,0 +1,83 @@
+#Unicode Enhancements
+The JDK 8 release includes support for Unicode 6.2.0. Since the release of JDK 7, which supported Unicode 6.0, the Unicode 6.1.0 and 6.2.0 
+specs introduced the following new features that are now included in JDK 8:
+
+* 733 new characters including Turkish Lira sign
+* 7 new scripts:
+    · Meroitic Hieroglyphs
+    · Meroitic Cursive
+    · Sora Sompeng
+    · Chakma
+    · Sharada
+    · Takri
+    · Miao
+
+* 11 new blocks - including 7 blocks for the new scripts listed above and 4 blocks for the following existing scripts:
+    · Arabic Extended-A
+    · Sundanese Supplement
+    · Meetei Mayek Extensions
+    · Arabic Mathematical Alphabetical Symbols
+
+The Java Tutorial has a section that discusses Unicode.
+
+#Adoption of Unicode CLDR Data and the java.locale.providers System Property
+The Unicode Consortium has released the Common Locale Data Repository (CLDR) project to "support the world's languages, with the largest and 
+most extensive standard repository of locale data available." The CLDR is becoming the defacto standard for locale data.
+    * CLDR represents the locale data provided by the Unicode CLDR project.
+    * HOST represents the current user's customization of the underlying operating system's settings. It works only with the user's default
+      locale, and the customizable settings may vary depending on the OS, but primarily Date, Time, Number, and Currency formats are 
+      supported. 
+    * SPI represents the locale sensitive services implemented in the installed SPI providers.
+    * JRE represents the locale data that is compatible with the prior JRE releases.
+To select the desired locale data source, use the java.locale.providers system property, listing the data sources in the preferred. 
+For example:
+java.locale.providers=HOST,SPI,CLDR,JRE
+The default behavior is equivalent to the following setting:
+java.locale.providers=JRE,SPI
+For further information, see the API specification page for java.util.spi.LocaleServiceProvider and the "JDK 8 and JRE 8 Supported Locales"
+page, which becomes available after the release of Oracle JDK8.
+
+#New Calendar and Locale APIs
+The JDK 8 release includes two new classes, several new methods, and a new return value for an existing static method:
+    * The DecimalFormatSymbols.getInstance(Locale) static method is now able to recognize Locale.UNICODE_LOCALE_EXTENSION for the numbering 
+      system.
+    * Two new abstract classes for service providers are added to the java.util.spi package. The CalendarDataProvider abstract class provides 
+      localized week parameters. The CalendarNameProvider abstract class provides field values names for displaying a calendar's name. This 
+      class recognizes the following calendar type strings:
+        · "gregory" - Gregorian/Julian hybrid
+        · "buddhist" - Thai Buddhist
+        · "japanese" - Japanese Imperial
+    * The new method, LocaleServiceProvider.html#isSupportedLocale(Locale), returns true if the specified locale is supported by the locale 
+      service provider.
+    * The new Calendar.getCalendarType() method returns the calendar type string ("gregory", "buddhist", "japanese").
+    * New style specifiers, used by the Calendar.getDisplayName and Calendar.getDisplayNames methods, determine the format of the Calendar 
+      name:
+        · Calendar.SHORT_FORMAT
+        · Calendar.LONG_FORMAT
+        · Calendar.SHORT_STANDALONE
+        · Calendar.LONG_STANDALONE
+    * Two new Locale methods for dealing with a locale's (optional) extensions:
+        · Locale.hasExtensions()
+        · Locale.stripExtensions()
+      Form more information, see http://docs.oracle.com/javase/tutorial/i18n/locale/extensions.html
+    * Two new Locale.filter methods return a list of Locale instances that match the specified criteria, as defined in RFC 4647:
+        · Locale.filter(List<Local.LanguageRange>, Collection<Locale>)
+        · Locale.filter(List<Locale.LanguageRange>, Collection<Locale>, Locale.FilteringMode)
+    * Two new Locale.filterTags methods return a list of language tags that match the specified criteria, as defined in RFC 4647:
+        · Locale.filterTags(List<Locale.LanguageRange>, Collection<String>)
+        · Locale.filterTags(List<Locale.LanguageRange>, Collection<String>, Locale.FilteringMode)
+    * Two new lookup methods return the best-matching locale or language tag using the lookup mechanism defined in RFC 4647:
+        · Locale.lookup(List<Local.LanguageRange>, Collection)
+        · Locale.lookupTag(List<Locale.LanguageRange>, Collection<String>)
+        
+#Ability to Install a Custom Resource Bundle as an Extension
+JDK 8 introduces the java.util.spi.ResourceBundleControlProvider interface, which is a service provider interface (SPI). SPIs enable you to 
+create extensible applications, which are those that you can extend easily without modifying their original code base. This SPI enables you 
+to change how the method ResourceBundle getBundle(String baseName, Locale targetLocale) loads resource bundles. Note that this method does 
+not require an instance of the ResourceBundle.Control class. An installed implementation of the ResourceBundleControlProvider SPI replaces 
+the default ResourceBundle.Control class, which defines the default bundle loading process. See Installing a Custom Resource Bundle as an 
+Extension for more information.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/intl/enhancements.8.html
+#DATE: 2014-08-15

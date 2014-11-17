@@ -1,0 +1,137 @@
+This chapter describes how to create and run JavaFX applications using scripts interpreted by the Nashorn engine. It is assumed that you are 
+familiar with JavaFX.
+You can interpret a JavaFX script application with Nashorn using the jjs command with the -fx option. For example, the following command 
+invokes Nashorn to interpret the JavaFXscript.js file:
+jjs -fx JavaFXscripts.js
+
+A JavaFX script application is similar to the Java equivalent, but Nashorn enables you to simplify many of the JavaFX constructs. Typically, a
+JavaFX script application contains only the start() function, which is equivalent to the start() method in its Java counterpart. It can also 
+contain the init() and stop() functions.
+
+#Example 3-1 JavaFX Application (HelloWorld.java)
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
+public class HelloWorld extends Application {
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("Hello World!");
+        Button btn = new Button();
+        btn.setText("Say 'Hello World'");
+        btn.setOnAction(new EventHandler<ActionEvent>() {
+ 
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Hello World!");
+            }
+        });
+        
+        StackPane root = new StackPane();
+        root.getChildren().add(btn);
+        primaryStage.setScene(new Scene(root, 300, 250));
+        primaryStage.show();
+    }
+}
+
+#Example 3-2 JavaFX Script Application (HelloWorld.js)
+var Button = javafx.scene.control.Button;
+var StackPane = javafx.scene.layout.StackPane;
+var Scene = javafx.scene.Scene;
+
+function start(primaryStage) {
+    primaryStage.title = "Hello World!";
+    var button = new Button();
+    button.text = "Say 'Hello World'";
+    button.onAction = function() print("Hello World!");
+    var root = new StackPane();
+    root.children.add(button);
+    primaryStage.scene = new Scene(root, 300, 250);
+    primaryStage.show();
+}
+
+Analyzing the two preceding examples, you can see how Nashorn enables you to simplify Java code when you write a JavaFX application as a
+script:
+    * There is no need to declare variable types, import packages, use annotations, specify the class name, and implement its main() method.
+      Only the JavaFX classes that are instantiated must be declared.
+    * JavaBeans do not require the get and set prefixes, and are treated as JavaScript properties instead of as Java methods. For more 
+      information,see Section 2.4, "Using JavaBeans".
+    * Implementing the javafx.event.EventHandler interface does not require you to specify the implemented method explicitly. Because handle()
+      is the only method, Nashorn automatically applies the provided function to the method. For more information, see Section 2.9, "Extending
+      Java Classes".
+The JavaFX primary stage is available to Nashorn as a global property $STAGE. This global property enables you to treat the whole script as 
+one start() function (you can still add the init() and stop() functions). Example 3-3 contains the source code for a simplified version of the
+JavaFX script application from Example 3-2.
+
+#Example 3-3 Simpler Version of the JavaFX Script Application (HelloWorldSimple.js)
+var Button = javafx.scene.control.Button;
+var StackPane = javafx.scene.layout.StackPane;
+var Scene = javafx.scene.Scene;
+
+$STAGE.title = "Hello World!";
+var button = new Button();
+button.text = "Say 'Hello World'";
+button.onAction = function() print("Hello World!");
+var root = new StackPane();
+root.children.add(button);
+$STAGE.scene = new Scene(root, 300, 250);
+$STAGE.show();
+
+In most cases, you should only add the classes that you instantiate or use to access static fields. However, for prototyping purposes, 
+Nashorn predefines a set of scripts that can be loaded to import groups of JavaFX packages and classes. You can load a script using the 
+load() function that takes a string with the name of the script. The following table lists the predefined script objects that are available 
+for inclusion:
+
+This script...              imports...
+fx:basse.js                 javafx.stage.Stage
+                            javafx.scene.Scene
+                            javafx.scene.Group
+                            javafx.beans
+                            javafx.collections
+                            javafx.events
+                            javafx.util
+                            
+fx:grphics.js               javafx.animation
+                            javafx.application
+                            javafx.concurrent
+                            javafx.css
+                            javafx.geometry
+                            javafx.print
+                            javafx.scene
+                            javafx.stage
+                            
+fx:controls.js              javafx.scene.chart
+                            javafx.scene.control
+                            
+fx:fxml.js                  javafx.fxml
+
+fx:web.js                   javafx.scene.web
+
+Example 3-4 contains the source code of the simplified JavaFX script application from Example 3-3 with load() functions used to import the 
+necessary packages and classes.
+
+#Example 3-4 JavaFX Script Application with Loaded Scripts
+load("fx:base.js");
+load("fx:controls.js");
+load("fx:graphics.js");
+
+$STAGE.title = "Hello World!";
+var button = new Button();
+button.text = "Say 'Hello World'";
+button.onAction = function() print("Hello World!");
+var root = new StackPane();
+root.children.add(button);
+$STAGE.scene = new Scene(root, 300, 250);
+$STAGE.show();
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/javafx.html
+#DATE: 2014-08-14

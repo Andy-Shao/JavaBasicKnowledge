@@ -1,0 +1,35 @@
+The following enhancements were introduced in JDK8:
+    * The jjs command was introduced, which invokes the Nashorn engine either in interactive shell mode, or to interpret files.
+      For more information, see the Nashorn User's Guide.
+    * The java command capable of lauching JavaFX applications, provided that the JavaFX application is packaged correctly. 
+      See How Classes are Found.
+    * The java command man page(both nroff and HTML) has been completely reworked. The advanced options are now divided into Runtime,
+      Compiler Collection, and Serviceability, according to the area that they affect. Several previously missing options are now
+      described. There is alos a section package-level or class-level or class-level dependencies. See JDK-8003562.
+    * JDK 8 provides remote access to diagnostic commands which were previously accessible only locally via the jcmd tool. Remote 
+      access is provided using the Java Management Extensions (JMX), so diagnostic commands are exposed to a platform MBean registered
+      to the platform MBean server. The MBean is the com.sun.management.DiagnosticCommandMBean interface. See the jcmd for Unix or
+      Windows. 
+    * The jarsigner tool contains a new option -tsapolicyid which enable you to request a signed time stamp from a Time Stamping 
+      Authority and attach it to a signed JAR file. See JDK-8009636
+    * You can obtain the names of the formal parameters of any method or constructor with the method 
+      java.lang.reflect.Executable.getParameters. However, .class files do not store formal parameter name by default. To store formal 
+      parameter names in a particular .class file, and thus enable the Reflection API to retrieve formal parameter names, compile the 
+      source file with the -parameters option of the javac compiler. See JDK-8004727.
+    * The type rules for binary comparisons in the Java Language Specification (JLS) Section 15.21 will now be correctly enforced by 
+      javac. Since JDK5, javac has accepted some programs with Object-primitive comparisons that are incorrectly typed according to JLS
+      15.21. These comparisons will now be correctly identified as type errors. See JDK-8013357.
+    * The apt tool and its associated API contained in the package com.sun.mirror have been removed in this release. Use the options 
+      available in the javac tool and the APIs contained in the packages javax.annotation.processing and javax.lang.model to process 
+      annotations. See JDK-7041249      
+      
+For enhancements pertaining to the javadoc tool, see the What's New page for Javadoc.
+
+links:
+Nashorn User's Guide: http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/index.html
+How Classes are Found: http://docs.oracle.com/javase/8/docs/technotes/tools/findingclasses.html
+JDK-8009636: http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8003562
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/tools/enhancements-8.html
+#DATE: 2014-08-12

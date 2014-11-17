@@ -1,0 +1,99 @@
+The JDK 8 release adds the following features and enhancements:
+    * TLS 1.1 and TLS 1.2 Enabled by Default: The SunJSSE provider enables the protocols TLS 1.1 and TLS 1.2 on the client by default.
+      See Protocols. Configure which SunJSSE protocols are enabled with the new system property jdk.tls.client.protocols. See 
+      Customizing JSSE.
+      
+    * Limited doPrivileged: A version of the method AccessController.doPrivileged has been added that enables code to assert a subset 
+      of its privileges, without preventing the full traversal of the stack to check for other permissions. See the section Asserting a 
+      Subset of Privileges in API for Privileged Blocks and RFE 7083329.
+
+    * Stronger Algorithms for Password-Based Encryption: Several AES-based Password-Based Encryption (PBE) algorithms, such as 
+      PBEWithSHA256AndAES_128 and PBEWithSHA512AndAES_256, have been added to the SunJCE provider. See Oracle Providers Documentation, 
+      JEP 121, and RFE 6383200.
+
+    * SSL/TLS Server Name Indication (SNI) Extension Support in JSSE Server: The SNI extension is a feature that extends the SSL/TLS 
+      protocols to indicate what server name the client is attempting to connect to during handshaking. Servers can use server name 
+      indication information to decide if specific SSLSocket or SSLEngine instances should accept a connection. SunJSSE has enabled SNI 
+      extension for client applications by default in JDK 7. JDK 8 supports the SNI extension for server applications.
+
+    * See the following sections in the JSSE Reference Guide for a general description with links to new class descriptions and examples:
+      Server Name Indication (SNI) Extension
+      The SNIServerName Class
+      The SNIMatcher Class
+      The SNIHostName Class
+      See also JEP 114.
+
+    * Support AEAD algorithms: The SunJCE provider is enhanced to support AES/GCM/NoPadding cipher implementation as well as GCM algorithm 
+      parameters. The SunJSSE provider is enhanced to support AEAD mode based cipher suites. See Oracle Providers Documentation, JEP 115.
+
+    * KeyStore Enhancements: A new command option -importpassword is added to the keytool utility, to accept a password and store it 
+      securely as a secret key. A new class, java.security.DomainLoadStoreParameter is added to support DKS keystore type. Other new classes 
+      such as java.security.PKCS12Attribute are added and other security APIs are modified to support KeyStore enhancements.
+      See Java Security Overview documentation.
+      See also JEP 166 and JDK-8005408.
+
+    * SHA-224 Message Digests: The cryptographic algorithms in JDK 8 have been enhanced with the SHA-224 variant of the SHA-2 family of 
+      message-digest implementations. See Oracle Providers Documentation, Standard Algorithm Name Documentation, PKCS#11 Reference Guide, 
+      JEP 130, and RFE 4963723.
+
+    * Enhanced Support for NSA Suite B Cryptography: This includes the following:
+      OID registration for NSA Suite B cryptography algorithms
+      SUN provider: Support for 2048-bit DSA key pair generation and additional signature algorithms for 2048-bit DSA keys such as 
+      SHA224withDSA and SHA256withDSA.
+      SunJCE provider: Lifting of the keysize restriction from 1024 to 2048 for Diffie-Hellman (DH).
+      See Oracle Providers Documentation, Standard Algorithm Name Documentation, and RFE 7044060.
+
+    * Better Support for High Entropy Random Number Generation: The SecureRandom class provides the generation of cryptographically strong 
+      random numbers used for private or public keys, ciphers, signed messages, and so on. Some SecureRandom implementations are better than 
+      others. The getInstanceStrong() method was introduced in JDK 8, which returns an instance of the strongest SecureRandom implementation 
+      available on each platform. It should be used in cases when you need to create a high-value and long-lived secret, such as an RSA private 
+      and public key pair.
+      For more information, see the SecureRandom section of the JCA Reference Guide and the SecureRandom API Specification.
+      Other changes to SecureRandom include:
+          * For UNIX-like platforms, two new implementations were introduced which provide blocking and non-blocking behavior: NativePRNGBlocking 
+            and NativePRNGNonBlocking.
+          * SHA1PRNG and NativePRNG were fixed to properly respect the SecureRandom seed source properties in the java.security file. (The obscure 
+            workaround using file:///dev/urandom and file:/dev/./urandom is no longer required.)
+      For details about changes to random number generation, see JEP 123.
+
+    * New PKIXRevocationChecker Class: The PKIXRevocationChecker class checks the revocation status of certificates with the PKIX algorithm. It 
+      supports best-effort checking, end-entity certificate checking, and mechanism-specific options and parameters. See Check Revocation Status of 
+      Certificates with PKIXRevocationChecker Class in the Java PKI Programmer's Guide, JEP 124, and RFE 6854712.
+
+    * 64-bit PKCS11 for Windows: The PKCS 11 provider support for Windows has been expanded to include 64-bit. See the 2.1 Requirements section of 
+      the JDK 8 PKCS#11 Reference Guide, JEP 131, and RFE 6880559.
+
+    * New rcache Types in Kerberos 5 Replay Caching: Two new rcache types are added to Kerberos 5. Type none means no rcache at all, and type dfl 
+      means the DFL style file-based rcache. Also, the acceptor requested subkey is now supported. They are configured using the 
+      sun.security.krb5.rcache and sun.security.krb5.acceptor.subkey system properties.
+    * Protocol Transition and Constrained Delegation for Kerberos 5: Kerberos 5 protocol transition and constrained delegation are supported within 
+      the same realm in JDK 8. See RFE 6355584.
+
+    * Weak Encryption Disabled by Default: The DES-related Kerberos 5 encryption types are not supported by default. These encryption types can be 
+      enabled by adding allow_weak_crypto=true in the krb5.conf file, but DES-related encryption types are considered highly insecure and should be 
+      avoided. See RFE 8012679.
+
+    * Unbound SASL for the GSS-API/Kerberos 5 mechanism: The Krb5LoginModule principal value in a JAAS configuration file can be set to asterisk (*) 
+      on the acceptor side to denote an unbound acceptor. This means that the initiator can access the server using any service principal name if the 
+      acceptor has the long term secret keys to that service. The name can be retrieved by the acceptor using the GSSContext.getTargName() method after 
+      the context is established. See RFE 8001104.
+
+    * SASL service for multiple host names: When creating a SASL server, the server name can be set to null to denote an unbound server, which means a 
+      client can request for the service using any server name. After a context is established, the server can retrieve the name as a negotiated property 
+      with the key name SASL.BOUND_SERVER_NAME. See RFE 7110803.
+
+    * JNI bridge to native JGSS on Mac OS X: JNI bridge to native JGSS is now supported on Mac OS X. Set the system property sun.security.jgss.native to 
+      true to enable it. See RFE 8010192.
+
+    * Support stronger ephemeral DH keys in the SunJSSE provider: Make ephemeral DH key match the length of the certificate key during SSL/TLS handshaking 
+      in the SunJSSE provider. A new system property, jdk.tls.ephemeralDHKeySize, is defined to customize the ephemeral DH key sizes. The minimum acceptable 
+      DH key size is 1024 bits, except for exportable cipher suites or legacy mode (jdk.tls.ephemeralDHKeySize=legacy). See Customizing Size of Ephemeral DH 
+      Keys and RFE 6956398.
+
+    * Support cipher suites preference customization in JSSE: By default, the SunJSSE provider honors the client's cipher suite preference. However, the 
+      behavior can be changed to respect the server's cipher suite preference by calling SSLParameters.setUseCipherSuitesOrder(true) in the server. See Cipher 
+      Suite Preference and RFE 7188657.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/security/enhancements-8.html
+#DATE: 2014-08-12

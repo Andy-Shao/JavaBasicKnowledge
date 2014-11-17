@@ -1,0 +1,33 @@
+#Java Rich Internet Applications Enhancement in JDK 8
+This release introduces the following improvements for web-deployed applications, called RIAs:
+* For sandbox RIAs, URLPermission is now used to allow connections back to the server from which they were started. URLPermissions is granted 
+  based on protocol, host and port of the code source. This change has the following implications:
+  * For sandbox RIAs, SocketPermissions for the origin host is no longer granted. Calls from JavaScript code to the RIA are not granted 
+    SocketPermissions beginning with JDK 8.
+  * Sandbox RIAs that are loaded from a server using the HTTP protocol are not allowed to connect back to the server using the HTTPS protocol.
+  * Sandbox RIAs loaded from a server on a specific port using either the HTTP or HTTPS protocol are not allowed to connect back to a 
+    different port on the server. For example, if the RIA is started from https://www.example.com:80, then the RIA is not allowed to connect 
+    back to https://www.example.com:8888.
+  * Sandbox RIAs loaded from a server using either the HTTP or HTTPS protocol and a domain name are not allowed to connect back to the server 
+    using an IP address. For example, if the RIA is started from https://www.example.com:8080, then the RIA is not allowed to connect back to 
+    https://192.0.2.1:8080.
+  * Privileged RIAs loaded from a server using the HTTP protocol do not accept calls from JavaScript code using the HTTPS protocol. If you 
+    want to make calls to your RIA from JavaScript code using HTTPS, you must load your RIA using HTTPS.
+* The Permissions attribute is now required in the JAR file manifest for the main JAR file of all Rich Internet Applications (RIAs) at all 
+  security levels. See http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/security/manifest.html for information on the Permissions 
+  attribute.
+* The Java class file format has been updated because of http://jcp.org/en/jsr/detail?id=292 , 
+  http://docs.oracle.com/javase/8/docs/technotes/guides/vm/multiple-language-support.html Consequently, the Pack200 engine has 
+  been updated accordingly to ensure that Java SE 8 class files are compressed effectively. In particular, the Pack200 engine now recognizes 
+  constant pool entries and new bytecodes introduced by JSR 292.
+  As a result, compressed files created with this version of pack200 will not be compatible with older versions of unpack200.
+  In general, if a compressed file contains Java SE 8 or Java SE 7 class files, then it will not be compatible with older unpackers. (For 
+  example, if a compressed file contains Java SE 7 class files, then it will not be compatible with unpackers from Java SE 6 or earlier.)
+  See http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/networking/pack200.html and RFE 
+  http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6981776.
+* The old Java Plug-in (the version available prior to Java SE 6 Update 10) has been removed from this release. See RFE 
+  http://bugs.java.com/bugdatabase/view_bug.do?bug_id=7076143
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/jweb/enhancements-8.html
+#DATE: 2014-08-18

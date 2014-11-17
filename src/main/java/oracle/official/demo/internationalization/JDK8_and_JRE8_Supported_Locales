@@ -1,0 +1,44 @@
+The set of supported locales varies between different implementations of the Java Platform
+Standard Edition (Java SE) as well as between different areas of functionality.
+This page documents locale support in Oracle's Java SE Development Kit 8 (JDK) and Java SE
+Runtime Environment 8 (JRE).
+
+#Installer and Supported Languages
+The JRE and JDK Installers are localized to the languages specified in the User_Interface_ 
+Translation. The installers will use the use the system's default locale setting to determine 
+which of the supported languages to use at the time of installation. If the system's default locale is 
+not supported by the installer, the installer will be displayed in English.
+The complete international version of the JRE is installed.
+
+#User_Interface_Translation
+#JRE
+The user interface elements provided by the JRE 8, include Swing dialogs, messages written 
+by the runtime environment to the standard output and standard error streams, as well as 
+messages produced by the tools provided with the JRE. These languages are also supported 
+in JavaFX. These user interface elements are localized into the following languages:
+Language                Locale ID
+Chinese (Simplified)    zh_CN
+Chinese (Traditional)   zh_TW
+English                 en
+French                  fr
+German                  de
+Italian                 it
+Japanese                ja
+Korean                  ko
+Portuguese (Brazilian)  pt_BR
+Spanish                 es
+Swedish                 sv
+
+#JDK
+The user interface elements provided by the JDK 8, include messages produced by the tools 
+that are only part of the JDK in addition to the elements provided by the JRE. These 
+languages are also supported in JavaFX. The additional user interface elements are 
+localized into the following languages:
+Language                Locale ID
+Chinese (Simplified)    zh_CN
+English                 en
+Japanese                ja
+
+#This document copy from Oracle!!
+#COPY FROM http://www.oracle.com/technetwork/java/javase/java8locales-2095355.html
+#DATE: 2014-08-15

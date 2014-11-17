@@ -1,0 +1,51 @@
+A time zone is region of the earth where the same standard time is used. Each time zone is described by
+an identifier and usually has the format region/city(Asia/Tokyo) and an offset from Greenwich/UTC time.
+For example, the offset for Tokyo is +09:00.
+
+#Zoneld and ZoneOffset
+The Date-Time API provides two classes for specifying a time zone or an offset:
+    * ZoneId specifies a time zone identifier and provides rules for converting between an Instant and
+      a LocalDateTime.
+    * ZoneOffset specifies a time zone offset from Greenwich/UTC time.
+Offsets form Greenwich/UTC time are usually defined in whole hours, but there are exceptions. The
+following code, form the TimeZoneId example, prints a list of all time zones that use offsets from
+Greenwith/UTC that are not defined in whole hours.
+
+#The Date-Time Classes
+The Date-Time API provides three temporal-based classes that work with time zones:
+    * ZonedDateTime handles a date and time with a corresponding time zone with a time zone offset
+      from Greenwich/UTC.
+    * OffestDateTime handles a date and time with a corresponding time zone offset from
+      Greenwich/UTC, without a time zone ID.
+    * OffsetTime handles time with a corresponding time zone offset from Greenwith/UTC, without a 
+      time zone ID.  
+When would you use OffsetDateTime instead of ZonedDateTime? If you are writing complex
+software that models its own rules for date and time calculations based on geographic locations, or if you
+are storing time-stamps in a database that track only absolute offsets from Greenwich/UTC time, then you
+might want to use OffsetDateTime. Also, XML and other network formats define date-time transfer as
+OffsetDateTime or OffsetTime.
+
+Although all three classes maintain an offset from Greenwich/UTC time, only ZonedDateTime uses the 
+ZoneRuels, part of the java.time.zone package, to determine how a offset varies for a particular
+time zone. For example, most time zones experience a gap(typeically of 1 hour) when moving the clock
+forward to daylight saving time, and a time overlap when moving the clock back to standard time and the
+last hour before the transition is repeated. The ZonedDateTime class accommodates this scenario,
+whereas the OffsetDateTime and OffsetTime classes, which do not have access to the ZoneRules.
+
+#ZonedDateTime
+in effect, combines the LocalDateTime class with the ZoneId class. It is
+used to represent a full date(year, month, day) and time(hour, minute, second, nanosecond) with a time
+zone(region/city, such as Europe/Paris).
+
+#OffsetDateTime
+
+#OffsetTime
+The OffsetTime class, in effect, combines the LocalTime class with the ZoneOffset class. It is used to 
+represent time(hour, minute, second, nanosecond) with an offset from Greenwich/UTC 
+time (+/-hours:minutes, such as +06:00 or -08:00).
+The OffsetTime class is used in the same situations as the OffsetDateTime class, but when tracking the
+date is not needed.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/tutorial/datetime/iso/timezones.html
+#DATE: 2014-08-18

@@ -1,0 +1,195 @@
+This chapter descirbes the extensions of the Nashorn engine that enable you to use UNIX sheel scripting features for JavaScript scripts.
+
+You can enable shell scripting extensions in Nashorn using the jjs command with the -scripting option.
+e.g  jjs -scripting
+For more information about jjs, see the tool's reference page at http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jjs.html
+
+In addition to the standar JavaScript comments (// and /* */), Nashorn supports shell-style comments using the number sign(#). If the 
+number sign is the first character in a script, then the Nashorn shell scripting extensions are automatically enabled when you interpret
+the script, even if you use the jjs tool without the -scripting option. This is useful when specifying the shebang(#!) at the beginning
+of a script to run it as a shell executable.
+
+#Shebang
+You can use the shebang(#!) at the beginning of a script file to enable the script file to run as a shell executable. If you specify the
+path to the jjs tool in the shebang, then when you execute the script, the shell runs the jjs tool instead, and passes the script file to
+it.
+The jjs tool is located in the JAVA_HOME/bin directory, where JAVA_HOME is the installation directory of the JDK(or the JRE). When you
+install the JDK, the JAVA_HOME environment variable is usually set up automatically. If it was not set up automatically, or if have 
+several versions of the JDK installed, set the JAVA_HOME environment variable to the correct path of the JDK installation directory 
+manually.
+You can specify direct path to the jjs tool in the shebang, but it is a good practice to create a symbolic link in the /usr/bin directory
+as follows:
+
+cd /usr/bin
+ln -s $JAVA_HOME/bin/jjs jjs
+
+After you set up the symbolic link, you can create Nashorn scripts can be run as executables. Also, it is possible to add command-line
+options directly to the shebang statement.
+e.g
+
+#!/usr/bin/jjs -fv
+print("Arguments: " + arguments);
+
+If you run the scriptArgs.js file as a shell executable, it is interpreted by the Nashorn engine as follows:
+ 
+>> ./scriptArgs.js -- arg1 arg2 arg3
+nashorn full version 1.8.0
+Arguments: arg1,arg2,arg3
+>>
+
+#String Interpolation
+String interpolation is used in UNIX shells to construct strings that contain values of variables or expressions. With shell scripting
+feature enabled, Nashorn enables you to embed variables and expressions into string literals in the same way. For example, you can 
+assign the result of the Date() constructor to the date variable, and then pass this variable to the string using the dollar sign($) and
+braces({}) as follows:
+
+jjs> var date = Date()
+jjs> "Date and time: ${date}"
+Date and time: Mon Aug 19 2013 19:43:08 GMT+0400 (MSK)
+
+The preceding example displays the date and time when the date variable was assigned the value returned by the Date() constructor. If you
+want to display the current date and time when the expression is evaluated, you can pass the Date() constructor directly as follows:
+
+jjs> "Current date and time: ${Date()}"
+Current date and time: Mon Aug 19 2013 19:49:53 GMT+0400 (MSK)
+
+String interpolation works only for within double quotation marks. Strings within single quotation marks are not interpolated:
+
+jjs> 'The variable is ${date}'
+The variable is ${date}
+
+#Here Document
+A here document (heredoc) specifies strings in UNIX shells that preserve line breaks and indentations. With shell scripting features 
+enabled, you can use Nashorn to evaluate scripts with heredocs. Example 4-2 shows an executable script that prints the first passed-in 
+argument on the first line, then the second argument indented on the second line, and the third argument on the forth line (after one blank 
+line).
+
+Example 4-2 Using a Heredoc in a Script (scriptHereArgs.js)
+
+#!/usr/bin/jjs
+print(<<EOD);
+${arguments[0]} is normal
+    ${arguments[1]} is indented
+
+${arguments[2]} is separated by a blank line
+EOD
+If you run the scriptHereArgs.js file as a shell executable, it is interpreted by the Nashorn engine as follows:
+
+>> ./scriptHereArgs.js -- Line1 Line2 Line3
+Line1 is normal
+    Line2 is indented
+
+Line3 is separated by a blank line
+
+#Global Objects
+With shell scripting features enabled, Nashorn defines several global objects:
+
+$ARG
+This global object can be used to access the arguments passed to the script, similar to how the arguments object is used, for example:
+>> jjs -scripting -- arg1 arg2 arg3
+jjs> $ARG
+arg1,arg2,arg3
+jjs> $ARG[1]
+arg2
+
+$ENV
+This global object maps all the current enviroment varable, for exmaple:
+jjs> $ENV.USER
+johndoe
+jjs> $ENV.PWD
+/foo/bar
+
+$EXEC()
+This global function launches processes to run commands, for example:
+jjs> $EXEC("ls -l")
+total 0
+drwxr-xr-x+ 1 johndoe staff 4096 Aug 18 11:03 dir
+-rwxrw-r--  1 johndoe staff  168 Aug 19 17:44 file.txt
+jjs> 
+The $EXEC() function can also take a second argument, which is a string to be used as standard input (stdin) for the process:
+jjs> $EXEC("cat", "Send this to stdout")
+Send this to stdout
+jjs>
+
+$OUT
+This global object is used to store standard output(stdout) of the process. For example, the result of $EXEC() is saved to $OUT.
+
+$ERR
+This global object is used to store the latest the latest standard error(stderr) of the process.
+
+$EXIT
+This global object is used to store the exit code of the process. If the exit is not zero, then the process failed.
+
+#Additional Nashorn Built-in Functions
+With shell scripting features enabled, Nashorn defines several built-in functions:
+
+quit()
+exit()
+These functions are synonymous, causing the current script process to exit to the system. You can pass an integer value as the argument 
+that represents the exit code to be returned to the system. By default, without an argument, the exit code is set to 0, meaning that the 
+process terminated correctly.
+
+print()
+echo()
+These functions are synonymous, causing the values passed in as arguments to be converted to strings, printed to stdout separated by 
+spaces, and followed by a new line. The implementation involves calls to java.lang.System.out.print(string) followed by 
+java.lang.System.out.println().
+>> jjs -scripting -- arg1
+jjs> var a = "Hello"
+jjs> print(123, $ARG[0], a, "World")
+123 arg1 Hello World
+jjs>
+
+readLine()
+This function reads one line of input from stdin and sends it to stdout, or you can assign the result to a variable. You can also pass a 
+string to the readLine() function to get a prompt line as in the following example:
+jjs> var name = readLine("What is your name? ")
+What is your name? Bob
+jjs> print("Hello, ${name}!")
+Hello, Bob!
+jjs> 
+
+readFully()
+This function reads the entire contents of a file passed in as a string argument and sends it to stdout, or you can assign the result to a 
+variable.
+jjs> readFully("text.txt")
+This is the contents of the text.txt file located in the current working directory.
+jjs> 
+
+load()
+This function loads and evaluates a script from a path, URL, or script object.
+jjs> load("/foo/bar/script.js")
+jjs> load("http://example.com/script.js")
+jjs> load({name:"script.js", script:"var x = 1 + 1; x;"})
+
+loadWithNewGlobal()
+This function is similar to the load() function, but the script is evaluated with a new global object. This is the primary method for 
+creating a fresh context for evaluating scripts. Additional arguments (after the script) passed to loadWithNewGlobal() are stored in the 
+arguments global variable of the new context.
+
+Object.bindProperties()
+This function is used to bind the properties of the first passed-in object with properties of the second passed-in object. The function 
+enables sharing of global properties. For example, in a Document Object Model (DOM) simulation, you can share properties between the global 
+object and the document. In a multithreading application, you can share functions across global objects of threads.
+The following example shows how you can bind the global object's properties to the properties of the obj object:
+jjs> var obj = {x:34,y:100}
+jjs> obj.x
+34
+jjs> obj.y
+100
+jjs> x
+<shell>:1 ReferenceError: "x" is not defined
+jjs> Object.bindProperties(this,obj)
+[object global]
+jjs> x
+34
+jjs> y = Math.PI
+3.141592653589793
+jjs> obj.y
+3.141592653589793
+jjs> 
+
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/shell.html
+#DATE: 2014-08-12

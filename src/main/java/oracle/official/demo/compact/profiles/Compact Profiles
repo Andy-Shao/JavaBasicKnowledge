@@ -1,0 +1,153 @@
+Compact Profiles, introduced in JDK8, enable reduced memory footprint for applications that do not entire Java platform. The javadoc compiler has a -profile option, which allows the application to be
+compiled using one of the supported profiles.
+
+There are supported profiles: compact1, compact2 and compact3. These are additive layers, so that each Profile contains all of the APIs in profiles smaller than itself. The compact profiles feature is useful in
+small devices. It also can be used to shorten the time to download an application from an "app store." It makes for more deployment of Java applications that bundle the JRE. A JRE can be configured with a
+compact profile, reducing its footprint for deployment along with a comapct profile application.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/compactprofiles/
+#DATE: 2014-08-11
+
+
+Compact profiles, introduced in Java SE 8, define subsets of the Java SE Platform API that can reduce the static size of the Java runtime on devices that have limited storage capacity.
+
+#Overview
+A compact profile (or simply profile) is a subset of the full Java SE Platform API. Because they have smaller storage footprints, profiles can enable many Java application to run on resource-constrained devices.
+Choosing a profile that closely matches an application's functions needs minimizes the storage devoted to unused functions.
+
+Compact profiles address API choices only; they are unrelated to the Java virtual machine, the language proper, or tools.
+
+There are three profiles, compact1, compact2, and compact3. Each profile includes the APIs of the lower-number profiles(compact2 is a superset of compact1). The full SE API is a sueprset of the compact3
+profile. The following table shows the high-level composition of each: 
+
+Full SE API                 Beans                           JNI                         JAX-WS
+                            Preferences                     Accessibility               IDL
+                            RMI-IIOP                        CORBA                       Print Service
+                            Sound                           Swing                       Java 2D
+                            AWT                             Drag and Drop               Input Methods
+                            Image I/O
+compact3                    Security                        JMX
+                            JMX JAXP                        Management                  Instrumentation
+compact2                    JDBC                            RMI                         XML_JAXP
+compact1                    Core(java.lang.*)               Security                    Serialization
+                            Networking                      Ref Objects                 Regular Expressions
+                            Data and Time                   Input/Output                Collections
+                            Logging                         Concurrency                 Reflection
+                            JAR                             ZIP                         Versioning
+                            Internationalization            JNDI                        Override Mechanism
+                            Extension Mechanism             Scripting
+                            
+These JDK 8 tools have explicit support for profiles:
+    * javac compiler: The -profile profile option directs the compiler to flag usage of an API not present in profile.
+    * jdeps static dependency analyzer: The -profile option shows the profile or file containing a package.
+    
+Detailed Profile Composition
+The follwing table lists the API packages in each of the compact profiles. The API Reference also defines profile composition.
+
+compact1                            compact2 Additions                      compact3 Additions
+java.io                             java.rmi                                java.lang.instrument
+java.lang                           java.rmi.activation                     java.lang.management
+java.lang.annotation                java.rmi.dgc                            java.security.acl
+java.lang.invoke                    java.rmi.registry                       java.util.prefs
+java.lang.ref                       java.rmi.server                         javax.annotation.processing
+java.lang.reflect                   java.sql                                javax.lang.model
+java.math                           javax.rmi.ssl                           javax.lang.model.element
+java.net                            javax.sql                               javax.lang.model.type
+java.nio                            javax.transaction                       javax.lang.model.util
+java.nio.channels                   javax.transaction.xa                    javax.management
+java.nio.channels.spi               javax.xml                               javax.management.loading
+java.nio.charset                    javax.xml.datatype                      javax.management.modelmbean
+java.nio.charset.spi                javax.xml.namespace                     javax.management.monitor
+java.nio.file                       javax.xml.parsers                       javax.management.openmbean
+java.nio.file.attribute             javax.xml.stream                        javax.management.relation
+java.nio.file.spi                   javax.xml.stream.events                 javax.management.remote
+java.security                       javax.xml.stream.util                   javax.management.remote.rmi
+java.security.cert                  javax.xml.transform                     javax.management.timer
+java.security.interfaces            javax.xml.transform.dom                 javax.naming
+java.security.spec                  javax.xml.transform.sax                 javax.naming.directory
+java.text                           javax.xml.transform.stax                javax.naming.event
+java.text.spi                       javax.xml.transform.stream              javax.naming.ldap
+java.time                           javax.xml.validation                    javax.naming.spi
+java.time.chrono                    javax.xml.xpath                         javax.security.auth.kerberos
+java.time.format                    org.w3c.dom                             javax.security.sasl
+java.time.temporal                  org.w3c.dom.bootstrap                   javax.sql.rowset
+java.time.zone                      org.w3c.dom.events                      javax.sql.rowset.serial
+java.util                           org.w3c.dom.ls                          javax.sql.rowset.spi
+java.util.concurrent                org.xml.sax                             javax.tools
+java.util.concurrent.atomic         org.xml.sax.ext                         javax.xml.crypto
+java.util.concurrent.locks          org.xml.sax.helpers                     javax.xml.crypto.dom
+java.util.function                                                          javax.xml.crypto.dsig
+java.util.jar                                                               javax.xml.crypto.dsig.dom
+java.util.logging                                                           javax.xml.crypto.dsig.keyinfo
+java.util.regex                                                             javax.xml.crypto.dsig.spec
+java.util.spi                                                               org.ietf.jgss
+java.util.stream         
+java.util.zip        
+javax.crypto         
+javax.crypto.interfaces      
+javax.crypto.spec        
+javax.net        
+javax.net.ssl        
+javax.script         
+javax.security.auth      
+javax.security.auth.callback         
+javax.security.auth.login        
+javax.security.auth.spi      
+javax.security.auth.x500         
+javax.security.cert      
+
+#Command
+jdeps (Java class dependency analyzer)
+-profile -> Shows Profile or the file containing a package
+e.g
+$ jdeps -profile demo/jfc/Notepad/Notepad.jar 
+demo/jfc/Notepad/Notepad.jar -> /usr/java/jre/lib/rt.jar (Full JRE)
+   <unnamed> (Notepad.jar)
+      -> java.awt                                           Full JRE
+      -> java.awt.event                                     Full JRE
+      -> java.beans                                         Full JRE
+      -> java.io                                            compact1
+      -> java.lang                                          compact1
+      -> java.net                                           compact1
+      -> java.util                                          compact1
+      -> java.util.logging                                  compact1
+      -> javax.swing                                        Full JRE
+      -> javax.swing.border                                 Full JRE
+      -> javax.swing.event                                  Full JRE
+      -> javax.swing.text                                   Full JRE
+      -> javax.swing.tree                                   Full JRE
+      -> javax.swing.undo                                   Full JRE
+      
+javac (Reads Java class and interface definitions and compiles them into bytecode and class files)
+Beginning with JDK 8, the javac compiler supports compact profiles. With compact profiles, applications that do not require 
+the entire Java platform can be deployed and run with a smaller footprint. The compact profiles feature could be used to 
+shorten the download time for applications from app stores. This feature makes for more compact deployment of Java 
+applications that bundle the JRE. This feature is also useful in small devices.
+
+The supported profile values are compact1, compact2, and compact3. These are additive layers. Each higher-numbered compact 
+profile contains all of the APIs in profiles with smaller number names.
+
+-profile -> When using compact profiles, this option specifies the profile name when compiling. For example:
+
+javac -profile compact1 Hello.java
+
+javac does not compile source code that uses any Java SE APIs that is not in the specified profile. Here is an example of the 
+error message that results from attempting to compile such source code:
+
+cd jdk1.8.0/bin
+./javac -profile compact1 Paint.java
+Paint.java:5: error: Applet is not available in profile 'compact1'
+import java.applet.Applet;
+
+In this example, you can correct the error by modifying the source to not use the Applet class. You could also correct the 
+error by compiling without the -profile option. Then the compilation would be run against the full set of Java SE APIs.(None 
+of the compact profiles include the Applet class.)
+
+An alternative way to compile with compact profiles is to use the -bootclasspath option to specify a path to an rt.jar file
+that specifies a profile's image. Using the -profile option instead does not require a profile image to be present on the 
+system at compile time. This is useful when cross-compiling.
+
+#This document copy from Oracle!!
+#COPY FROM http://docs.oracle.com/javase/8/docs/technotes/guides/compactprofiles/compactprofiles.html
+#DATE: 2014-08-11

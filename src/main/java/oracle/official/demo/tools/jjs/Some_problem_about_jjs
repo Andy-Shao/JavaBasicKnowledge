@@ -1,0 +1,1 @@
+* the jjs & jrunscript can't use the JVM arguments. For example: -Xmx512m -Xmx512m -server.
