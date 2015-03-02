@@ -48,7 +48,7 @@ import java.util.Locale;
 
 /**
  * 
- * Descript:Convert LocalDate -> ChronoLocalDate -> String and back.<br>
+ * Descript:Convert LocalDate -&gt; ChronoLocalDate -&gt; String and back.<br>
  * Copyright: Copyright(c) Aug 20, 2014<br>
  * Encoding:UNIX UTF-8
  *
@@ -63,6 +63,7 @@ public class StringConverter {
      * @param localDate - the ISO date to convert and format.
      * @param chrono - an optional Chronology. If null, then IsoChronology
      *                 is used.
+     * @return convert {@link LocalDate} to {@link String}
      */
     @SuppressWarnings("unused")
 	public static String toString(LocalDate localDate, Chronology chrono) {
@@ -99,6 +100,7 @@ public class StringConverter {
      *
      * @param chrono - an optional Chronology. If null, then IsoChronology
      *                 is used.
+     * @return convert {@link String} to {@link LocalDate}
      */
     public static LocalDate fromString(String text, Chronology chrono) {
         if (text != null && !text.isEmpty()) {

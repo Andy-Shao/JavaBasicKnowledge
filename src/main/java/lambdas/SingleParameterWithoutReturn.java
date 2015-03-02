@@ -8,7 +8,7 @@ package lambdas;
  * Encoding:UNIX UTF-8
  * @author Andy.Shao
  *
- * @param <IN>
+ * @param <IN> input type
  */
 public interface SingleParameterWithoutReturn<IN>{
 

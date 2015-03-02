@@ -8,9 +8,9 @@ package lambdas;
  * Encoding:UNIX UTF-8
  * @author Andy.Shao
  *
- * @param <IN1>
- * @param <IN2>
- * @param <RET>
+ * @param <IN1> input type one
+ * @param <IN2> input type two
+ * @param <RET> return type
  */
 @FunctionalInterface
 public interface TwoParametersWithReturn<IN1 , IN2 , RET>{

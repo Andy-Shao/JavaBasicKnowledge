@@ -8,7 +8,7 @@ package lambdas;
  * Encoding:UNIX UTF-8
  * @author Andy.Shao
  *
- * @param <RET>
+ * @param <RET> return type
  */
 public interface NoParametersWithReturn<RET>{
 

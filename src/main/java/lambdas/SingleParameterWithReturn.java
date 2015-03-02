@@ -8,8 +8,8 @@ package lambdas;
  * Encoding:UNIX UTF-8
  * @author Andy.Shao
  *
- * @param <IN>
- * @param <RET>
+ * @param <IN> input type
+ * @param <RET> return type
  */
 @FunctionalInterface
 public interface SingleParameterWithReturn<IN , RET>{
