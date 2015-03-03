@@ -21,8 +21,8 @@
         </dependency>
         <dependency>
             <groupId>com.github.Andy-Shao</groupId>
-            <artifactId>Useful-Tools</artifactId>
-            <version>4.0</version>
+            <artifactId>Gear</artifactId>
+            <version>1.0</version>
         </dependency>
     </dependencies>
     
