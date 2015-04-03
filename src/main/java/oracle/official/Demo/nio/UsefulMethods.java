@@ -9,33 +9,32 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class UsefulMethods {
 
-	@Test
-	public void getMIME_Type() throws IOException, URISyntaxException{
-		URI uri = Thread.currentThread().getContextClassLoader()
-				.getResource("oracle/official/Demo/nio/UsefulMethods.class").toURI();
-		String type = Files.probeContentType(Paths.get(uri));
+    @Test
+    public void fileStore() throws URISyntaxException {
+        for (FileStore store : FileSystems.getDefault().getFileStores())
+            System.out.println(store);
+    }
 
-		assertNull(type);
-	}
-	
-	@Test
-	public void pathStringSeparator(){
-		String separator = FileSystems.getDefault().getSeparator();
-		
-		assertThat(separator, is(File.separator));
-	}
-	
-	@Test
-	public void fileStore() throws URISyntaxException{
-		for(FileStore store : FileSystems.getDefault().getFileStores()){
-			System.out.println(store);
-		}
-	}
+    @Test
+    public void getMIME_Type() throws IOException , URISyntaxException {
+        URI uri =
+            Thread.currentThread().getContextClassLoader().getResource("oracle/official/Demo/nio/UsefulMethods.class")
+                .toURI();
+        String type = Files.probeContentType(Paths.get(uri));
+
+        Assert.assertNull(type);
+    }
+
+    @Test
+    public void pathStringSeparator() {
+        String separator = FileSystems.getDefault().getSeparator();
+
+        Assert.assertThat(separator , Matchers.is(File.separator));
+    }
 }

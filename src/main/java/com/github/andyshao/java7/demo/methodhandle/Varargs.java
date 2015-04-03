@@ -12,52 +12,65 @@ import org.junit.Test;
  * Descript:<br>
  * Copyright: Copyright(c) Jul 30, 2014<br>
  * Encoding:UNIX UTF-8
+ * 
  * @author Andy.Shao
  *
  */
 public class Varargs {
 
-	public void normalMethod(String arg1, int arg2, int[] arg3){
-		System.out.println(Arrays.toString(arg3));
-	}
-	
-	@Test
-	public void asVarargsCollector() throws Throwable{
-		MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh = lookup.findVirtual(Varargs.class, "normalMethod", MethodType.methodType(void.class, String.class, int.class, int[].class));
-		mh = mh.asVarargsCollector(int[].class);
-		mh.invoke(this, "Hello", 2, 3, 4, 5);
-	}
-	
-	@Test
-	public void asCollector() throws Throwable{
-		MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh = lookup.findVirtual(Varargs.class, "normalMethod", MethodType.methodType(void.class, String.class, int.class, int[].class));
-		mh = mh.asCollector(int[].class, 2);
-		mh.invoke(this, "Hello", 2, 3, 4);
-	}
-	
-	public void toBeSpreaded(String arg1, int arg2, int arg3, int arg4){
-		System.out.format("arg1=%s, arg2=%d, arg3=%d, arg4=%d\n", arg1, arg2, arg3, arg4);
-	}
-	
-	@Test
-	public void asSpreader() throws Throwable{
-		MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh = lookup.findVirtual(Varargs.class, "toBeSpreaded", MethodType.methodType(void.class, String.class, int.class, int.class, int.class));
-		mh = mh.asSpreader(int[].class, 3);
-		mh.invoke(this, "Hello", new int[]{3, 4, 5});
-	}
-	
-	public void varargsMethod(String arg1, int... args){
-		System.out.format("arg1=%s, args=%s\n", arg1, Arrays.toString(args));
-	}
-	
-	@Test
-	public void asFixedArity() throws Throwable{
-		MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh = lookup.findVirtual(Varargs.class, "varargsMethod", MethodType.methodType(void.class, String.class, int[].class));
-		mh = mh.asFixedArity();
-		mh.invoke(this, "Hello", new int[]{2, 4});
-	}
+    @Test
+    public void asCollector() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh =
+            lookup.findVirtual(Varargs.class , "normalMethod" ,
+                MethodType.methodType(void.class , String.class , int.class , int[].class));
+        mh = mh.asCollector(int[].class , 2);
+        mh.invoke(this , "Hello" , 2 , 3 , 4);
+    }
+
+    @Test
+    public void asFixedArity() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh =
+            lookup.findVirtual(Varargs.class , "varargsMethod" ,
+                MethodType.methodType(void.class , String.class , int[].class));
+        mh = mh.asFixedArity();
+        mh.invoke(this , "Hello" , new int[] {
+            2 , 4
+        });
+    }
+
+    @Test
+    public void asSpreader() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh =
+            lookup.findVirtual(Varargs.class , "toBeSpreaded" ,
+                MethodType.methodType(void.class , String.class , int.class , int.class , int.class));
+        mh = mh.asSpreader(int[].class , 3);
+        mh.invoke(this , "Hello" , new int[] {
+            3 , 4 , 5
+        });
+    }
+
+    @Test
+    public void asVarargsCollector() throws Throwable {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh =
+            lookup.findVirtual(Varargs.class , "normalMethod" ,
+                MethodType.methodType(void.class , String.class , int.class , int[].class));
+        mh = mh.asVarargsCollector(int[].class);
+        mh.invoke(this , "Hello" , 2 , 3 , 4 , 5);
+    }
+
+    public void normalMethod(String arg1 , int arg2 , int[] arg3) {
+        System.out.println(Arrays.toString(arg3));
+    }
+
+    public void toBeSpreaded(String arg1 , int arg2 , int arg3 , int arg4) {
+        System.out.format("arg1=%s, arg2=%d, arg3=%d, arg4=%d\n" , arg1 , arg2 , arg3 , arg4);
+    }
+
+    public void varargsMethod(String arg1 , int... args) {
+        System.out.format("arg1=%s, args=%s\n" , arg1 , Arrays.toString(args));
+    }
 }

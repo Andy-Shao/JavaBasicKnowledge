@@ -17,15 +17,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-import com.github.andyshao.convert.Convert;
-import com.github.andyshao.util.ArrayTools;
-import com.github.andyshao.util.ByteBuffereTools;
+import com.github.andyshao.lang.Convert;
+import com.github.andyshao.nio.ByteBuffereOperation;
+import com.github.andyshao.reflect.ArrayOperation;
 
 /**
  * 
@@ -37,21 +36,6 @@ import com.github.andyshao.util.ByteBuffereTools;
  *
  */
 public class CharsetEncoderTest {
-
-    @Test
-    public void simpleEncode() {
-        Charset charset = StandardCharsets.UTF_8;
-        CharsetEncoder encoder = charset.newEncoder();
-        CharBuffer inputBuffer = CharBuffer.allocate(256);
-        inputBuffer.put("Hello").flip();
-        ByteBuffer outputBuffer = ByteBuffer.allocate(256);
-        encoder.encode(inputBuffer , outputBuffer , true);
-        encoder.flush(outputBuffer);
-
-        outputBuffer.flip();
-        assertThat(Convert.BYTES_2_HEX.convert(ArrayTools.pack_unpack(ByteBuffereTools.usedArray(outputBuffer) ,
-            Byte[].class)) , is("48656c6c6f"));
-    }
 
     @Ignore
     @Test
@@ -70,31 +54,20 @@ public class CharsetEncoderTest {
                 CharBuffer charBuffer = CharBuffer.wrap(line);
                 while (true) {
                     CoderResult result = encoder.encode(charBuffer , outputBuffer , false);
-                    if (result.isOverflow()) writeToChannel(destChannel , outputBuffer);
+                    if (result.isOverflow()) this.writeToChannel(destChannel , outputBuffer);
                     else if (result.isUnderflow()) break;
                 }
             }
 
-            writeToChannel(destChannel , outputBuffer);
+            this.writeToChannel(destChannel , outputBuffer);
             encoder.encode(CharBuffer.allocate(0) , outputBuffer , true);
             CoderResult result = encoder.flush(outputBuffer);
             if (result.isOverflow()) {
                 ByteBuffer newBuffer = ByteBuffer.allocate(1024);
                 encoder.flush(newBuffer);
-                writeToChannel(destChannel , newBuffer);
-            } else writeToChannel(destChannel , outputBuffer);
+                this.writeToChannel(destChannel , newBuffer);
+            } else this.writeToChannel(destChannel , outputBuffer);
         }
-    }
-
-    private void writeToChannel(WritableByteChannel channel , ByteBuffer buffer) throws IOException {
-        buffer.flip();
-        channel.write(buffer);
-        buffer.compact();
-    }
-
-    @Test
-    public void useFilter() throws CharacterCodingException {
-        assertThat(filter("你好，123世界!") , is("123!"));
     }
 
     private String filter(String string) throws CharacterCodingException {
@@ -106,5 +79,31 @@ public class CharsetEncoderTest {
         ByteBuffer byteBuffer = encoder.encode(buffer);
         CharBuffer result = decoder.decode(byteBuffer);
         return result.toString();
+    }
+
+    @Test
+    public void simpleEncode() {
+        Charset charset = StandardCharsets.UTF_8;
+        CharsetEncoder encoder = charset.newEncoder();
+        CharBuffer inputBuffer = CharBuffer.allocate(256);
+        inputBuffer.put("Hello").flip();
+        ByteBuffer outputBuffer = ByteBuffer.allocate(256);
+        encoder.encode(inputBuffer , outputBuffer , true);
+        encoder.flush(outputBuffer);
+
+        outputBuffer.flip();
+        Assert.assertThat(Convert.BYTES_2_HEX.convert(ArrayOperation.pack_unpack(
+            ByteBuffereOperation.usedArray(outputBuffer) , Byte[].class)) , Matchers.is("48656c6c6f"));
+    }
+
+    @Test
+    public void useFilter() throws CharacterCodingException {
+        Assert.assertThat(this.filter("你好，123世界!") , Matchers.is("123!"));
+    }
+
+    private void writeToChannel(WritableByteChannel channel , ByteBuffer buffer) throws IOException {
+        buffer.flip();
+        channel.write(buffer);
+        buffer.compact();
     }
 }

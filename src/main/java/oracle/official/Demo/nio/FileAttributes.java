@@ -18,33 +18,35 @@ import java.nio.file.attribute.UserDefinedFileAttributeView;
 
 public class FileAttributes {
 
-	//FileAttributeView
-	BasicFileAttributeView basicFileAttributeView;
-	DosFileAttributeView fileAttributeView;
-	PosixFileAttributeView posixFileAttributeView;
-	FileOwnerAttributeView fileOwnerAttributeView;
-	AclFileAttributeView aclFileAttributeView;
-	UserDefinedFileAttributeView userDefinedFileAttributeView;
-	
-	//FileAttribute
-	BasicFileAttributes basicFileAttributes;
-	DosFileAttributes dosFileAttributes;
-	PosixFileAttributes posixFileAttributes;
+    public static void main(String[] args) throws URISyntaxException , IOException {
+        URL url =
+            Thread.currentThread().getContextClassLoader().getResource("oracle/official/Demo/nio/FileAttributes.class");
+        Path file = Paths.get(url.toURI());
 
-	public static void main(String[] args) throws URISyntaxException, IOException {
-		URL url = Thread.currentThread().getContextClassLoader().getResource("oracle/official/Demo/nio/FileAttributes.class");
-		Path file = Paths.get(url.toURI());
-		
-		BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
-		
-		System.out.println("creationTime: " + attr.creationTime());
-		System.out.println("lastAccessTime: " + attr.lastAccessTime());
-		System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
+        BasicFileAttributes attr = Files.readAttributes(file , BasicFileAttributes.class);
 
-		System.out.println("isDirectory: " + attr.isDirectory());
-		System.out.println("isOther: " + attr.isOther());
-		System.out.println("isRegularFile: " + attr.isRegularFile());
-		System.out.println("isSymbolicLink: " + attr.isSymbolicLink());
-		System.out.println("size: " + attr.size());
-	}
+        System.out.println("creationTime: " + attr.creationTime());
+        System.out.println("lastAccessTime: " + attr.lastAccessTime());
+        System.out.println("lastModifiedTime: " + attr.lastModifiedTime());
+
+        System.out.println("isDirectory: " + attr.isDirectory());
+        System.out.println("isOther: " + attr.isOther());
+        System.out.println("isRegularFile: " + attr.isRegularFile());
+        System.out.println("isSymbolicLink: " + attr.isSymbolicLink());
+        System.out.println("size: " + attr.size());
+    }
+
+    AclFileAttributeView aclFileAttributeView;
+    //FileAttribute
+    BasicFileAttributes basicFileAttributes;
+    //FileAttributeView
+    BasicFileAttributeView basicFileAttributeView;
+    DosFileAttributes dosFileAttributes;
+    DosFileAttributeView fileAttributeView;
+
+    FileOwnerAttributeView fileOwnerAttributeView;
+    PosixFileAttributes posixFileAttributes;
+    PosixFileAttributeView posixFileAttributeView;
+
+    UserDefinedFileAttributeView userDefinedFileAttributeView;
 }

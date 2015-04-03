@@ -12,22 +12,25 @@ import org.junit.Test;
  * Descript:<br>
  * Copyright: Copyright(c) Jul 30, 2014<br>
  * Encoding:UNIX UTF-8
+ * 
  * @author Andy.Shao
  *
  */
 public class MethodHandleProxy {
 
-	public void doSomething(){
-		System.out.println("WORK");
-	}
-	
-	@Test
-	public void useMethodHandleProxy() throws NoSuchMethodException, IllegalAccessException{
-		MethodHandles.Lookup lookup = MethodHandles.lookup();
-		MethodHandle mh = lookup.findVirtual(MethodHandleProxy.class, "doSomething", MethodType.methodType(void.class));
-		mh = mh.bindTo(this);
-		
-		Runnable runnable = MethodHandleProxies.asInterfaceInstance(Runnable.class, mh);
-		new Thread(runnable).start();;
-	}
+    public void doSomething() {
+        System.out.println("WORK");
+    }
+
+    @Test
+    public void useMethodHandleProxy() throws NoSuchMethodException , IllegalAccessException {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodHandle mh =
+            lookup.findVirtual(MethodHandleProxy.class , "doSomething" , MethodType.methodType(void.class));
+        mh = mh.bindTo(this);
+
+        Runnable runnable = MethodHandleProxies.asInterfaceInstance(Runnable.class , mh);
+        new Thread(runnable).start();
+        ;
+    }
 }

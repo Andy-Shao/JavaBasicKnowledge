@@ -6,8 +6,8 @@ import java.nio.file.StandardOpenOption;
 
 public class FileOptions {
 
-	//Option
-	StandardCopyOption copyOption;
-	StandardOpenOption openOption;
-	LinkOption linkOption;
+    //Option
+    StandardCopyOption copyOption;
+    LinkOption linkOption;
+    StandardOpenOption openOption;
 }

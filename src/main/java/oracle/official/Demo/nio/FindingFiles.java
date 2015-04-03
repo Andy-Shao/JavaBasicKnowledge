@@ -8,12 +8,12 @@ import java.nio.file.Paths;
 
 public class FindingFiles {
 
-	public static void main(String[] args) throws URISyntaxException {
-		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.class");
-		
-		Path filename = Paths.get("FindingFiles.java");
-		if(matcher.matches(filename)) System.out.println(filename);
-		
-		System.out.println("END");
-	}
+    public static void main(String[] args) throws URISyntaxException {
+        PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.class");
+
+        Path filename = Paths.get("FindingFiles.java");
+        if (matcher.matches(filename)) System.out.println(filename);
+
+        System.out.println("END");
+    }
 }

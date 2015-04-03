@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>TransferQueue</title>
+</head>
+<body>
+<p>TransferQueue是一个继承了 BlockingQueue的接口，并且增加若干新的方法。LinkedTransferQueue是实现类，其定义
+为一个无界的队列，一样具有先进先出(FIFO : first-in-first-out)的特性。</p>
+<p>Doug Lea 这样评价它：</p>
+<div style="border:  1px solid gray;">
+<i>
+TransferQueue是一个聪明的队列，它是ConcurrentLinkedQueue, SynchronousQueue (在公平模式下), 无界的
+LinkedBlockingQueues等的超集。
+</i>
+</div>
+<p>显然易见，混合了若干高级特性，并且具有高性能的一个组合体，一个多面手。</p>
+<p>单纯从队列来看，TransferQueue接口增加了一些很实用的新特性，其transfer方法提供了线程之间直接交换对象的捷径</p>
+<ol style="1">
+<li>transfer(E e)<br/>若当前存在一个正在等待获取的消费者线程，即立刻移交之；否则，会插入当前元素e到队列尾部，
+并且等待进入阻塞状态，到有消费者线程取走该元素。</li>
+<li>tryTransfer(E e)<br/>若当前存在一个正在等待获取的消费者线程，会立即传输给它;
+否则将插入元素e到队列尾部，并且等待被消费者线程获取消费掉,
+若在指定的时间内元素e无法被消费者线程获取，则返回false，同时该元素被移除。</li>
+<li>hasWaitingConsumer()<br/>很明显，判断是否终端消费者线程</li>
+<li>getWaitingConsumerCount()<br/>字面意思很明白，获取终端所有等待获取元素的消费线程数量</li>
+<li>size()<br/>因为队列的异步特性，检测当前队列的元素个数需要逐一迭代，可能会得到一个不太准确的结果，
+尤其是在遍历时有可能队列发生更改。</li>
+<li>批量操作<br/>类似于 addAll，removeAll, retainAll, containsAll, equals, toArray 等方法，API不能保证一定会立刻执行。
+因此，我们在使用过程中，不能有所期待，这是一个具有异步特性的队列。</li>
+</ol>
+<p><b>注意事项:</b></p>
+<ul>
+<li>无论是transfer还是tryTransfer方法，在>=1个消费者线程等待获取元素时（此时队列为空），都会立刻转交，
+这属于线程之间的元素交换。注意，这时，元素并没有进入队列。</li>
+<li>在队列中已有数据情况下，transfer将需要等待前面数据被消费掉，直到传递的元素e被消费线程取走为止。</li>
+<li>使用transfer方法，工作者线程可能会被阻塞到生产的元素被消费掉为止</li>
+<li>消费者线程等待为零的情况下，各自的处理元素入队与否情况有所不同。</li>
+<li>size()方法，需要迭代，可能不太准确，尽量不要调用。</li>
+</ul>
+</body>
+</html>
