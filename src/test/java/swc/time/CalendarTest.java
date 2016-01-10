@@ -1,8 +1,10 @@
 package swc.time;
 
-import java.util.*;
-import java.time.*;
-import org.junit.*;
+import java.time.Instant;
+import java.util.Calendar;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * 
@@ -10,13 +12,14 @@ import org.junit.*;
  * Descript:<br>
  * Copyright: Copryright(c) Apr 14, 2014<br>
  * Encoding:UNIX UTF-8
+ * 
  * @author Andy.Shao
  *
  */
-public class CalendarTest{
+public class CalendarTest {
 
     @Test
-    public void toInstant(){
+    public void toInstant() {
         Assert.assertTrue(Calendar.getInstance().toInstant() instanceof Instant);
     }
 }

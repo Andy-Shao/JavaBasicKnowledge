@@ -1,16 +1,17 @@
 package swc.util.function;
 
-import java.util.function.*;
-import org.junit.*;
+import java.util.function.Supplier;
 
-public class SupplierTest{
+import org.junit.Test;
 
-	@Test
-	public void get(){
-		get(() -> "With nothing as input, return a T.");	
-	}
+public class SupplierTest {
 
-	public static <T> void get(Supplier<T> action){
-		System.out.println(action.get());
-	}
+    public static <T> void get(Supplier<T> action) {
+        System.out.println(action.get());
+    }
+
+    @Test
+    public void get() {
+        SupplierTest.get(() -> "With nothing as input, return a T.");
+    }
 }

@@ -1,16 +1,18 @@
 package swc.util.function;
 
-import java.util.function.*;
-import org.junit.*;
+import java.util.function.BinaryOperator;
 
-public class BinaryOperatorTest{
+import org.junit.Test;
 
-	@Test
-	public void apply(){
-		apply((x,y) -> x+y, "Take two T's as input, return one T as output,", "useful for \"reduce\" operations.");
-	}
+public class BinaryOperatorTest {
 
-	public static <T> void apply(BinaryOperator<T> action, T one, T two){
-		System.out.println(action.apply(one, two));
-	}
+    public static <T> void apply(BinaryOperator<T> action , T one , T two) {
+        System.out.println(action.apply(one , two));
+    }
+
+    @Test
+    public void apply() {
+        BinaryOperatorTest.apply((x , y) -> x + y , "Take two T's as input, return one T as output," ,
+            "useful for \"reduce\" operations.");
+    }
 }

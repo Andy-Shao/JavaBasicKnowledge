@@ -1,19 +1,20 @@
 package swc.util.function;
 
-import java.util.function.*;
-import org.junit.*;
+import java.util.function.Predicate;
 
-public class PredicateTest{
+import org.junit.Test;
 
-	@Test
-	public void test(){
-		test(x -> {
-			System.out.println(x);
-			return true;
-		}, "Take a T as input, return a boolean as output.");
-	}
+public class PredicateTest {
 
-	public static <T> void test(Predicate<T> action, T t){
-		System.out.println(action.test(t));
-	}
+    public static <T> void test(Predicate<T> action , T t) {
+        System.out.println(action.test(t));
+    }
+
+    @Test
+    public void test() {
+        PredicateTest.test(x -> {
+            System.out.println(x);
+            return true;
+        } , "Take a T as input, return a boolean as output.");
+    }
 }

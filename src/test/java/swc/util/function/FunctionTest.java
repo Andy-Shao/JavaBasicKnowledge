@@ -1,16 +1,17 @@
 package swc.util.function;
 
-import org.junit.*;
-import java.util.function.*;
+import java.util.function.Function;
 
-public class FunctionTest{
+import org.junit.Test;
 
-	@Test
-	public void apply(){
-		apply(x -> x, "Take a T as input, return an R as ouput.");
-	}	
+public class FunctionTest {
 
-	public static <T,R> void apply(Function<T,R> action, T t){
-		System.out.println(action.apply(t));
-	}
+    public static <T , R> void apply(Function<T , R> action , T t) {
+        System.out.println(action.apply(t));
+    }
+
+    @Test
+    public void apply() {
+        FunctionTest.apply(x -> x , "Take a T as input, return an R as ouput.");
+    }
 }
