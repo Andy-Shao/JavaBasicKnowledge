@@ -1,0 +1,1 @@
+utag.ut.tealium_setTTDid({"tvt":[{"timestamp":"Thu Feb 04 03:15:29 2016","t1":"a7fb9254-3746-4465-9cde-de2ed8056a62"}]})

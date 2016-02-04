@@ -1,0 +1,46 @@
+“java.lang.instrument”包的具体实现，依赖于 JVMTI。JVMTI（Java Virtual Machine Tool Interface）是一套由 Java 虚拟机提供的，为
+ JVM 相关的工具提供的本地编程接口集合。JVMTI 是从 Java SE 5 开始引入，整合和取代了以前使用的 Java Virtual Machine Profiler 
+ Interface (JVMPI) 和 the Java Virtual Machine Debug Interface (JVMDI)，而在 Java SE 6 中，JVMPI 和 JVMDI 已经消失了。JVMTI
+  提供了一套”代理”程序机制，可以支持第三方工具程序以代理的方式连接和访问 JVM，并利用 JVMTI 提供的丰富的编程接口，完成很多跟 JVM 相
+  关的功能。事实上，java.lang.instrument 包的实现，也就是基于这种机制的：在 Instrumentation 的实现当中，存在一个 JVMTI 的代理程
+  序，通过调用 JVMTI 当中 Java 类相关的函数来完成 Java 类的动态操作。除开 Instrumentation 功能外，JVMTI 还在虚拟机内存管理，线程
+  控制，方法和变量操作等等方面提供了大量有价值的函数。
+  
+Instrumentation 的最大作用，就是类定义动态改变和操作。在 Java SE 5 及其后续版本当中，开发者可以在一个普通 Java 程序（带有 
+main 函数的 Java 类）运行时，通过 –javaagent 参数指定一个特定的 jar 文件（包含 Instrumentation 代理）来启动 Instrumentation的代
+理程序。
+
+在 Java SE 5 当中，开发者可以让 Instrumentation 代理在 main 函数运行前执行。简要说来就是如下几个步骤：
+1.编写 premain 函数
+编写一个 Java 类，包含如下两个方法当中的任何一个
+public static void premain(String agentArgs, Instrumentation inst); [1]
+public static void premain(String agentArgs); [2]
+其中，[1] 的优先级比 [2] 高，将会被优先执行（[1] 和 [2] 同时存在时，[2] 被忽略）。
+在这个 premain 函数中，开发者可以进行对类的各种操作。
+agentArgs 是 premain 函数得到的程序参数，随同 “–javaagent”一起传入。与 main 函数不同的是，这个参数是一个字符串而不是一个字符串
+数组，如果程序参数有多个，程序将自行解析这个字符串。
+Inst 是一个 java.lang.instrument.Instrumentation 的实例，由 JVM 自动传入。java.lang.instrument.Instrumentation 是 
+instrument 包中定义的一个接口，也是这个包的核心部分，集中了其中几乎所有的功能方法，例如类定义的转换和操作等等。
+
+2.jar 文件打包
+将这个 Java 类打包成一个 jar 文件，并在其中的 manifest 属性当中加入” Premain-Class”来指定步骤 1 当中编写的那个带有 premain 的 
+Java类。（可能还需要指定其他属性以开启更多功能）
+
+3.运行
+用如下方式运行带有 Instrumentation 的 Java 程序：
+java -javaagent:jar文件的位置[=传入premain的参数]
+对 Java 类文件的操作，可以理解为对一个 byte 数组的操作（将类文件的二进制字节流读入一个 byte 数组）。开发者可以在
+“ClassFileTransformer”的 transform 方法当中得到，操作并最终返回一个类的定义（一个 byte 数组）。这方面，Apache 的 BCEL 开源项目
+提供了强有力的支持，读者可以在参考文章“Java SE 5 特性 Instrumentation 实践”中看到一个 BCEL 和 Instrumentation 结合的例子。具体
+的字节码操作并非本文的重点，所以，本文中所举的例子，只是采用简单的类文件替换的方式来演示 Instrumentation 的使用。
+
+
+
+附：agent jar中manifest的属性
+Premain-Class: 当在VM启动时，在命令行中指定代理jar时，必须在manifest中设置Premain-Class属性，值为代理类全类名，并且该代理类必须提供premain方法。否则JVM会异常终止。
+Agent-Class: 当在VM启动之后，动态添加代理jar包时，代理jar包中manifest必须设置Agent-Class属性，值为代理类全类名，并且该代理类必须提供agentmain方法，否则无法启动该代理。
+Boot-Class-Path: Bootstrap class loader加载类时的搜索路径，可选。
+Can-Redefine-Classes: true/false；标示代理类是否能够重定义类。可选。
+Can-Retransform-Classes: true/false；标示代理类是否能够转换类定义。可选。
+Can-Set-Native-Prefix::true/false；标示代理类是否需要本地方法前缀，可选。
+当一个代理jar包中的manifest文件中既有Premain-Class又有Agent-Class时，如果以命令行方式在VM启动前指定代理jar，则使用Premain-Class；反之如果在VM启动后，动态添加代理jar，则使用Agent-Class
