@@ -47,7 +47,7 @@ class SortTask extends RecursiveAction{
     }
 
     public static void main(String[] args) {
-        int arraySize = 500000;
+        int arraySize = 50000000;
         LongStream longStream = new Random().longs();
         long[] array = longStream.filter(item -> item >=0)
             .limit(arraySize).toArray();

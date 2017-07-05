@@ -65,5 +65,6 @@ public class Applyer extends RecursiveAction {
         array = new Random().doubles().filter(item -> item >= 0)
                 .limit(arraySize).toArray();
         sumOfSquares(pool , array);
+        pool.shutdown();
     }
 }

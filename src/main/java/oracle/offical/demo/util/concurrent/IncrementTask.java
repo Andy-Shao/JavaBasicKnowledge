@@ -38,6 +38,7 @@ public class IncrementTask extends RecursiveAction {
         pool.invoke(task);
         times = System.currentTimeMillis() - times;
         System.out.format("Running spend times: %d milliseconds\n" , times);
+        pool.shutdown();
         
 //        long times2 = System.currentTimeMillis();
 //        for(int i =0; i< array.length; i++)
