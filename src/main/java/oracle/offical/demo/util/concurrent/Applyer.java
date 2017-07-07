@@ -66,5 +66,14 @@ public class Applyer extends RecursiveAction {
                 .limit(arraySize).toArray();
         sumOfSquares(pool , array);
         pool.shutdown();
+        
+        array = new Random().doubles().filter(item -> item >= 0).limit(arraySize).toArray();
+        double value = 1;
+        long times2 = System.currentTimeMillis();
+        for (double d : array) {
+            value = value * d;
+        }
+        times2 = System.currentTimeMillis() - times2;
+        System.out.format("Running spend times: %d milliseconds\n" , times2);
     }
 }
