@@ -27,8 +27,10 @@ public class AsynchronousServerSocketChannelDemo {
         serverChannel.accept(null , new CompletionHandler<AsynchronousSocketChannel , Void>() {
 
             @Override
-            public void completed(AsynchronousSocketChannel result , Void attachment) {
+            public void completed(AsynchronousSocketChannel ch , Void attachment) {
+                // accept the next connection
                 serverChannel.accept(null , this);
+                
                 //use clientChannel
             }
 
