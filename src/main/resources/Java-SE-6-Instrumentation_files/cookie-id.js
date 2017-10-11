@@ -1,1 +1,0 @@
-(typeof(cmSetAvid) == 'function') && cmSetAvid('80081453683051154837444');
