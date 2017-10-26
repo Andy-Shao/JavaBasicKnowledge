@@ -1,0 +1,46 @@
+##Overview of What's New in JDK 9
+Java Platform, Standard Edition 9 is a major feature release. The following summarizes features and enhancements in Java SE 9 and in JDK 9, Oracle's implementation of Java SE 9.
+A JDK Enhancement Proposal (JEP) is a proposal to design and implement a nontrivial change to the JDK. 
+A Java Specification Request (JSR) descript proposed and final specification for the Java platform.
+
+##Key Changes in JDK 9
+#Java Platform Modules System
+Introduces a new kind of Java programing component, the module, which is a named, self-describing collection of code and data. This module system:
+
+* Introduces a new optional phase, link time, which is in-between compile time an run time, during which a set of modules can be assembled and optimized into a custom runtime image; 
+* Adds options to the tools javac, jlink, and java where you can specify module paths, which locate definitions of modules
+* Introduces the modular JAR file, which is a JAR file with a module-info.class file in its root directory.
+* Introduces the JMOD format, which is a packaging format similar to JAR except it can include native code and configuration files;
+
+#The JDK itself has been divided into a set of modules. This change:
+* Enables you to combine the JDK's modules into a variety of configurations, including:
+    * Configuration corresponding to the JRE and the JDK
+    * Configuration roughly equivalent in content to each of the Compact Profiles define in Java SE 8.
+    * Custom configuratios that contain only a specified set of modules and their required modules.
+* Restructures the JDK and JRE runtime images to accommodate modules and improve performance, security, and maintainability.
+* Defines a new URI scheme for naming modules, classes, and resources stored in a runtime image without revealing the internal structure or format of the image.
+* Removes the endorsed-standards override mechanism and the extension mechanism.
+* Removes rt.jar and tools.jar from the java runtime image.
+* Makes most of the JDK's internal APIs inaccessible by default but leaves a few critical, widely used internal APIs accessible until supported replacements exist for all or most of their functionally.
+
+Run the command jdeps -jdkinternals to determine if your code uses internal JDK APIs.
+
+
+#JEP 223: New Version-String scheme
+Provides a simplified version-string format that helps to clearly distinguish major, minor, security, and path update releases.
+The new version-string format is as follows:
+$MAJOR.$MINOR.$SECURITY.$PATH
+    * $MAJOR is the version number that is incremented for a major release, for example JDK 9, which contains significant new features as specified by the Java SE platform specification. A major release contains new features and changes to existing features, which are planned and announced weill in advance.
+    * $MINOR is the version number that is incremented for each minor update, such as bug fixes, revisions to standard APIs, or implementation of features outside the scope of the relevant platform specifications.
+    * $SECURITY is the version number that is incremented for a security-update release, which contains critical fixes, including those necessary to improve security.
+    * $PATCH is the version number that is incremented for a release containing security and high-priority customer fixes that have been tested together.
+
+
+##What's New for Tools in JDK 9
+#JEP 222: jshell: The java Shell (Read-Eval-Print Loop)
+Adds Read-Eval-Print Loop (REPL) functionally to the Java platform.
+
+The jshell tool provides an interactive command-line interface for evaluating declarations, statements, and expressions of the Java programming language. It facilitates prototyping and exploration of coding options with immediate results and feedback. The immediate feedback combined with the ability to start with expressions is useful for education - whether learning the Java language or just learning a new API or language feature.
+
+Others ... (Reading documents, please!)
+
