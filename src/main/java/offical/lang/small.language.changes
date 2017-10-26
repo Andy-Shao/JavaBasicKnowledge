@@ -1,0 +1,10 @@
+@SafeVargs annotation is allowed on private instance methods
+The @SafeVarargs annotation can be applied only to methods that cannot be overridden. These include static methods, final instance methods, and, new in JavaSE 9, private instance methods.
+
+You can use diamond syntax in conjunction with anonymous inner classes
+
+The underscore character is not a legal name.
+If you use the underscore character ("_") an identifier, your source code can no longer be compiled.
+
+Private interface methods are supported.
+Private interface methods are supported. This support allows nonabstract methods of an interface to share code between them.
